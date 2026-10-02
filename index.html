@@ -1461,7 +1461,7 @@
             <span>HAGENG_CAM 1080p60</span>
           </div>
 
-          <div id="speech-bubble">去你媽的！</div>
+          <div id="speech-bubble">操你媽！</div>
 
           <div class="hit-box-target hit-target-left" id="hitbox-left" title="左側判定圈">
             <span class="hit-icon-display" id="hit-icon-left">🎯</span>
@@ -1784,9 +1784,12 @@
       <div class="settings-section-title">🎵 實況背景音樂 (BGM) 來源設定</div>
       <div class="audio-slot-row">
         <span>當前遊戲 BGM：<b id="lbl-bgm-status">狂暴 Trap / 808 重低音 (內建合成)</b></span>
-        <div class="file-input-wrapper" style="width:auto;">
-          <button class="icon-btn">上傳自訂 BGM</button>
-          <input type="file" accept="audio/*" id="input-custom-bgm">
+        <div class="audio-btn-group">
+          <button type="button" class="icon-btn" onclick="sound.testBgm()" id="btn-test-bgm">試聽 BGM</button>
+          <div class="file-input-wrapper" style="width:auto;">
+            <button class="icon-btn">上傳自訂 BGM</button>
+            <input type="file" accept="audio/*" id="input-custom-bgm">
+          </div>
         </div>
       </div>
 
@@ -1795,7 +1798,7 @@
       
       <div class="audio-slot-row">
         <div>
-          <div>1. 「去你媽的！」</div>
+          <div>1. 「操你媽！」</div>
           <small id="voice-status-0" style="color:#888;">預設語音合成</small>
         </div>
         <div class="audio-btn-group">
@@ -1809,7 +1812,7 @@
 
       <div class="audio-slot-row">
         <div>
-          <div>2. 「踢爆你的骨灰罈！」</div>
+          <div>2. 「你娘機掰咧！」</div>
           <small id="voice-status-1" style="color:#888;">預設語音合成</small>
         </div>
         <div class="audio-btn-group">
@@ -1823,7 +1826,7 @@
 
       <div class="audio-slot-row">
         <div>
-          <div>3. 「到底是在靠杯三小啊！」</div>
+          <div>3. 「到底在靠杯三小！」</div>
           <small id="voice-status-2" style="color:#888;">預設語音合成</small>
         </div>
         <div class="audio-btn-group">
@@ -2058,22 +2061,54 @@
       constructor() {
         this.ctx = null;
         this.enabled = true;
-        this.bgmMode = null; // 'SWEET' or 'TRAP' or 'CUSTOM'
+        this.bgmMode = null; // 'SWEET', 'TRAP', 'CUSTOM', 'DEFAULT_BGM', 'GAMEOVER'
         this.bgmTimer = null;
-        this.customBgmAudio = null;
+        this.bgmAudioElement = null; // Used for custom uploaded BGM
         this.customBgmDataUrl = null;
+
         this.voiceClips = [null, null, null];
+        this.defaultVoiceNames = ['cnm.wav', 'lnjb.wav', 'cbsx.wav'];
+        this.defaultVoiceClips = ['./cnm.wav', './lnjb.wav', './cbsx.wav'];
+        this.defaultVoiceCandidates = [
+          [
+            './cnm.wav',
+            'https://cdn.jsdelivr.net/gh/amalex0610/hageng-anti-tilt-battle@main/cnm.wav',
+            'https://raw.githubusercontent.com/amalex0610/hageng-anti-tilt-battle/main/cnm.wav',
+            'https://amalex0610.github.io/hageng-anti-tilt-battle/cnm.wav',
+            './CNM.WAV',
+            'https://cdn.jsdelivr.net/gh/amalex0610/hageng-anti-tilt-battle@main/CNM.WAV'
+          ],
+          [
+            './lnjb.wav',
+            'https://cdn.jsdelivr.net/gh/amalex0610/hageng-anti-tilt-battle@main/lnjb.wav',
+            'https://raw.githubusercontent.com/amalex0610/hageng-anti-tilt-battle/main/lnjb.wav',
+            'https://amalex0610.github.io/hageng-anti-tilt-battle/lnjb.wav',
+            './LNJB.WAV',
+            './JB.WAV',
+            'https://cdn.jsdelivr.net/gh/amalex0610/hageng-anti-tilt-battle@main/JB.WAV'
+          ],
+          [
+            './cbsx.wav',
+            'https://cdn.jsdelivr.net/gh/amalex0610/hageng-anti-tilt-battle@main/cbsx.wav',
+            'https://raw.githubusercontent.com/amalex0610/hageng-anti-tilt-battle/main/cbsx.wav',
+            'https://amalex0610.github.io/hageng-anti-tilt-battle/cbsx.wav',
+            './CBSX.WAV',
+            'https://cdn.jsdelivr.net/gh/amalex0610/hageng-anti-tilt-battle@main/CBSX.WAV'
+          ]
+        ];
+        this.resolvedVoiceUrls = [null, null, null];
         this.step = 0;
         this.sweetStep = 0;
         this.gameOverStep = 0;
         this.bgmMasterGain = null;
-        this.bgmVolume = 0.45; // Default 45% to prevent drowning out voice
-        this.voiceVolume = 1.0; // Default 100%
+        this.bgmVolume = 0.45;
+        this.voiceVolume = 1.0;
         this.isMuted = false;
         this.isDucking = false;
         this.duckingTimeout = null;
         this.onDuckingChange = null;
         this.loadAudioConfig();
+        this.preloadAudios();
       }
 
       loadAudioConfig() {
@@ -2138,8 +2173,8 @@
           this.bgmMasterGain.gain.cancelScheduledValues(this.ctx.currentTime);
           this.bgmMasterGain.gain.setTargetAtTime(targetVol, this.ctx.currentTime, rampTime);
         }
-        if (this.customBgmAudio) {
-          this.customBgmAudio.volume = targetVol;
+        if (this.bgmAudioElement) {
+          this.bgmAudioElement.volume = targetVol;
         }
       }
 
@@ -2161,7 +2196,7 @@
         return this.isMuted;
       }
 
-      /* 0. BROADCAST AUDIO DUCKING (Feature 2) */
+      /* BROADCAST AUDIO DUCKING */
       startDucking() {
         if (!this.enabled || this.isMuted) return;
         this.isDucking = true;
@@ -2173,7 +2208,6 @@
         if (typeof this.onDuckingChange === 'function') {
           this.onDuckingChange(true);
         }
-        // Safety timeout (4s) in case speech utterance or audio fails to fire onend
         this.duckingTimeout = setTimeout(() => {
           this.endDucking();
         }, 4000);
@@ -2186,7 +2220,7 @@
           clearTimeout(this.duckingTimeout);
           this.duckingTimeout = null;
         }
-        this.applyBgmGain(0.18); // Smooth swell back up
+        this.applyBgmGain(0.18);
         if (typeof this.onDuckingChange === 'function') {
           this.onDuckingChange(false);
         }
@@ -2194,173 +2228,13 @@
 
       testDuckingEffect() {
         this.init();
-        const wasStopped = (!this.bgmTimer && !this.customBgmAudio);
+        const wasStopped = (!this.bgmTimer && !this.bgmAudioElement);
         if (wasStopped) {
           this.startTrapBGM();
         }
         setTimeout(() => {
           this.playVoiceQuote(Math.floor(Math.random() * 3));
         }, 350);
-      }
-
-      /* 4. COMICAL CARTOON FAIL BGM (Option A: Tuba Bounce & Cheeky Cartoon Staccato) */
-      startGameOverBGM() {
-        if (!this.enabled || this.isMuted) return;
-        this.init();
-        if (this.bgmMode === 'GAMEOVER' && this.bgmTimer) return;
-        this.stopBGM();
-
-        this.bgmMode = 'GAMEOVER';
-        this.gameOverStep = 0;
-        // ~132 BPM, 8th notes (each step is ~227ms)
-        const stepInterval = (60 / 132) / 2 * 1000;
-        this.bgmTimer = setInterval(() => this.playGameOverStep(), stepInterval);
-      }
-
-      playGameOverStep() {
-        if (!this.enabled || !this.ctx || this.isMuted) return;
-        const now = this.ctx.currentTime;
-        const s = this.gameOverStep % 32;
-        const targetDest = this.bgmMasterGain || this.ctx.destination;
-
-        // --- 1. FAT BOUNCY CARTOON TUBA / LOW BRASS ---
-        // Oompah bounce pattern with funny chromatic slides
-        const tubaPattern = [
-          65.41, 0, 98.00, 0,        // C2, G2
-          65.41, 0, 98.00, 0,        // C2, G2
-          87.31, 0, 130.81, 0,       // F2, C3
-          98.00, 0, 116.54, 123.47,  // G2, Bb2, B2 (cheeky walkup)
-          130.81, 0, 98.00, 0,       // C3, G2
-          130.81, 0, 98.00, 0,       // C3, G2
-          73.42, 0, 98.00, 0,        // D2, G2
-          98.00, 92.50, 87.31, 65.41 // G2, F#2, F2, C2 (comical stumble walkdown!)
-        ];
-
-        const tFreq = tubaPattern[s];
-        if (tFreq > 0) {
-          const osc = this.ctx.createOscillator();
-          const filter = this.ctx.createBiquadFilter();
-          const gain = this.ctx.createGain();
-
-          osc.type = 'sawtooth';
-          // Bouncy tuba pitch scoop: starts slightly higher and quickly drops into the pitch
-          osc.frequency.setValueAtTime(tFreq * 1.18, now);
-          osc.frequency.exponentialRampToValueAtTime(tFreq, now + 0.05);
-
-          // Resonant lowpass filter for fat cartoon brass "BOOMF"
-          filter.type = 'lowpass';
-          filter.Q.value = 4.2;
-          filter.frequency.setValueAtTime(520, now);
-          filter.frequency.exponentialRampToValueAtTime(140, now + 0.22);
-
-          // Short, punchy, bouncy tuba envelope
-          gain.gain.setValueAtTime(0.42, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
-
-          osc.connect(filter);
-          filter.connect(gain);
-          gain.connect(targetDest);
-
-          osc.start(now);
-          osc.stop(now + 0.26);
-
-          // Sub harmonic punch for weighty cartoon bottom
-          const sub = this.ctx.createOscillator();
-          const subGain = this.ctx.createGain();
-          sub.type = 'triangle';
-          sub.frequency.setValueAtTime(tFreq * 0.5, now);
-          subGain.gain.setValueAtTime(0.3, now);
-          subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-          sub.connect(subGain);
-          subGain.connect(targetDest);
-          sub.start(now);
-          sub.stop(now + 0.22);
-        }
-
-        // --- 2. CHEEKY CARTOON KAZOO / HORNS STACCATO LEAD ---
-        const leadPattern = [
-          329.63, 0, 392.00, 440.00, // E4, G4, A4
-          0, 392.00, 0, 329.63,      // G4, E4
-          349.23, 0, 329.63, 0,      // F4, E4
-          293.66, 0, 261.63, 0,      // D4, C4
-          440.00, 0, 523.25, 440.00, // A4, C5, A4
-          0, 392.00, 0, 329.63,      // G4, E4
-          293.66, 0, 329.63, 293.66, // D4, E4, D4
-          261.63, 0, 0, 0            // C4 taunt finish!
-        ];
-
-        const mFreq = leadPattern[s];
-        if (mFreq > 0) {
-          const mOsc = this.ctx.createOscillator();
-          const mFilter = this.ctx.createBiquadFilter();
-          const mGain = this.ctx.createGain();
-
-          mOsc.type = 'square'; // Buzzing comical reed / horn tone
-          
-          // Grace note pitch scoop on syncopations
-          if (s === 3 || s === 19 || s === 27) {
-            mOsc.frequency.setValueAtTime(mFreq * 0.88, now);
-            mOsc.frequency.exponentialRampToValueAtTime(mFreq, now + 0.04);
-          } else if (s === 28) {
-            // Sarcastic slide down on the last note!
-            mOsc.frequency.setValueAtTime(mFreq, now);
-            mOsc.frequency.exponentialRampToValueAtTime(mFreq * 0.75, now + 0.35);
-          } else {
-            mOsc.frequency.setValueAtTime(mFreq, now);
-          }
-
-          // Bandpass / warm filter for cartoon sound
-          mFilter.type = 'bandpass';
-          mFilter.Q.value = 2.5;
-          mFilter.frequency.setValueAtTime(1100, now);
-
-          // Staccato envelope
-          const dur = (s === 28) ? 0.38 : 0.16;
-          mGain.gain.setValueAtTime(0.22, now);
-          mGain.gain.exponentialRampToValueAtTime(0.001, now + dur);
-
-          mOsc.connect(mFilter);
-          mFilter.connect(mGain);
-          mGain.connect(targetDest);
-
-          mOsc.start(now);
-          mOsc.stop(now + dur + 0.02);
-        }
-
-        // --- 3. COMICAL WOODBLOCK / TEMPLE BLOCK PERCUSSION ---
-        if (s % 4 === 2) {
-          const wOsc = this.ctx.createOscillator();
-          const wGain = this.ctx.createGain();
-          wOsc.type = 'sine';
-          const wFreq = (s % 8 === 2) ? 880 : 1050; // High/Low woodblock pitch
-          wOsc.frequency.setValueAtTime(wFreq, now);
-          wOsc.frequency.exponentialRampToValueAtTime(wFreq * 0.6, now + 0.035);
-
-          wGain.gain.setValueAtTime(0.18, now);
-          wGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
-
-          wOsc.connect(wGain);
-          wGain.connect(targetDest);
-          wOsc.start(now);
-          wOsc.stop(now + 0.045);
-        }
-
-        // --- 4. FUNNY CARTOON WHISTLE / SLIP ACCENT ON STEP 31 ---
-        if (s === 31) {
-          const pOsc = this.ctx.createOscillator();
-          const pGain = this.ctx.createGain();
-          pOsc.type = 'triangle';
-          pOsc.frequency.setValueAtTime(500, now);
-          pOsc.frequency.exponentialRampToValueAtTime(150, now + 0.18); // Comical slip whistle
-          pGain.gain.setValueAtTime(0.2, now);
-          pGain.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
-          pOsc.connect(pGain);
-          pGain.connect(targetDest);
-          pOsc.start(now);
-          pOsc.stop(now + 0.2);
-        }
-
-        this.gameOverStep++;
       }
 
       /* 1. SWEET KAWAII MUSIC BOX BGM (For Start Screen) */
@@ -2372,7 +2246,7 @@
 
         this.bgmMode = 'SWEET';
         this.sweetStep = 0;
-        const stepInterval = (60 / 106) / 2 * 1000; // 8th notes at 106 BPM
+        const stepInterval = (60 / 106) / 2 * 1000;
         this.bgmTimer = setInterval(() => this.playSweetStep(), stepInterval);
       }
 
@@ -2389,7 +2263,6 @@
         ];
 
         const targetDest = this.bgmMasterGain || this.ctx.destination;
-
         const freq = melody[s];
         if (freq > 0) {
           const osc1 = this.ctx.createOscillator();
@@ -2415,7 +2288,6 @@
           osc2.stop(now + 0.45);
         }
 
-        // Gentle bass note on every 4th step
         if (s % 8 === 0) {
           const bOsc = this.ctx.createOscillator();
           const bGain = this.ctx.createGain();
@@ -2453,27 +2325,138 @@
         osc.stop(now + 0.36);
       }
 
-      /* 3. HARDCORE AGGRESSIVE TRAP BGM (Gameplay) */
+      /* Preload Voice Clips in Background & Resolve Working Stream */
+      preloadAudios() {
+        // Pre-resolve voice clips from GitHub
+        for (let i = 0; i < 3; i++) {
+          if (!this.voiceClips[i] && !this.resolvedVoiceUrls[i]) {
+            this.resolveAudioCandidate(this.defaultVoiceCandidates[i], (resolvedUrl) => {
+              this.resolvedVoiceUrls[i] = resolvedUrl;
+            });
+          }
+        }
+      }
+
+      resolveAudioCandidate(candidates, onResolved) {
+        let idx = 0;
+        const testNext = async () => {
+          if (idx >= candidates.length) return;
+          const url = candidates[idx++];
+
+          try {
+            const audio = new Audio();
+            audio.preload = 'auto';
+            let done = false;
+            const timer = setTimeout(() => {
+              if (!done) {
+                done = true;
+                audio.src = '';
+                testNext();
+              }
+            }, 3500);
+
+            audio.oncanplay = () => {
+              if (!done) {
+                done = true;
+                clearTimeout(timer);
+                onResolved(url);
+              }
+            };
+            audio.onerror = async () => {
+              if (!done) {
+                done = true;
+                clearTimeout(timer);
+                if (url.startsWith('http')) {
+                  try {
+                    const res = await fetch(url);
+                    if (res.ok) {
+                      const blob = await res.blob();
+                      const blobUrl = URL.createObjectURL(new Blob([blob], { type: 'audio/wav' }));
+                      onResolved(blobUrl);
+                      return;
+                    }
+                  } catch (e) {}
+                }
+                testNext();
+              }
+            };
+            audio.src = url;
+            audio.load();
+          } catch (e) {
+            testNext();
+          }
+        };
+        testNext();
+      }
+
+      updateBgmStatusUI() {
+        const lbl = document.getElementById('lbl-bgm-status');
+        if (!lbl) return;
+        if (this.customBgmDataUrl) {
+          lbl.textContent = '✅ 已啟用自訂上傳 BGM 音樂';
+          lbl.style.color = '#00f593';
+        } else {
+          lbl.textContent = '狂暴 Trap / 808 重低音 (內建合成)';
+          lbl.style.color = '#ffb800';
+        }
+      }
+
+      /* 3. GAMEPLAY BGM (Priority: Custom Upload > Built-in Synth Trap) */
       startTrapBGM() {
         if (!this.enabled || this.isMuted) return;
         this.init();
         this.stopBGM();
 
         if (this.customBgmDataUrl) {
-          if (!this.customBgmAudio) {
-            this.customBgmAudio = new Audio(this.customBgmDataUrl);
-            this.customBgmAudio.loop = true;
+          const audioUrl = this.customBgmDataUrl;
+          this.bgmAudioElement = new Audio(audioUrl);
+          this.bgmAudioElement.loop = true;
+          this.bgmAudioElement.volume = (this.isMuted || !this.enabled) ? 0 : (this.isDucking ? this.bgmVolume * 0.2 : this.bgmVolume);
+
+          let fallbackTriggered = false;
+          const onFail = (e) => {
+            console.warn("Custom BGM load failed, falling back to synth Trap:", e);
+            if (!fallbackTriggered) {
+              fallbackTriggered = true;
+              this.startSynthTrapBGM();
+            }
+          };
+
+          this.bgmAudioElement.onerror = onFail;
+          const p = this.bgmAudioElement.play();
+          if (p !== undefined) {
+            p.then(() => {
+              this.bgmMode = 'CUSTOM';
+              this.updateBgmStatusUI();
+            }).catch(onFail);
+          } else {
+            this.bgmMode = 'CUSTOM';
+            this.updateBgmStatusUI();
           }
-          const targetVol = (this.isMuted || !this.enabled) ? 0 : (this.isDucking ? this.bgmVolume * 0.2 : this.bgmVolume);
-          this.customBgmAudio.volume = targetVol;
-          this.customBgmAudio.play().catch(e => console.log(e));
-          this.bgmMode = 'CUSTOM';
           return;
         }
 
+        // Default: Built-in 808 Synth Trap
+        this.startSynthTrapBGM();
+        this.updateBgmStatusUI();
+      }
+
+      testBgm() {
+        this.init();
+        const btn = document.getElementById('btn-test-bgm');
+        if (this.bgmMode === 'CUSTOM' || this.bgmMode === 'TRAP') {
+          this.stopBGM();
+          if (btn) btn.textContent = '試聽 BGM';
+        } else {
+          if (btn) btn.textContent = '⏹️ 停止試聽';
+          this.startTrapBGM();
+        }
+      }
+
+      startSynthTrapBGM() {
         this.bgmMode = 'TRAP';
         this.step = 0;
-        const stepInterval = (60 / 140) / 4 * 1000; // 140 BPM Trap 16th notes
+        const stepInterval = (60 / 140) / 4 * 1000;
         this.bgmTimer = setInterval(() => this.playTrapStep(), stepInterval);
       }
 
@@ -2482,11 +2465,14 @@
           clearInterval(this.bgmTimer);
           this.bgmTimer = null;
         }
-        if (this.customBgmAudio) {
-          this.customBgmAudio.pause();
-          this.customBgmAudio.currentTime = 0;
+        if (this.bgmAudioElement) {
+          this.bgmAudioElement.pause();
+          this.bgmAudioElement.currentTime = 0;
+          this.bgmAudioElement = null;
         }
         this.bgmMode = null;
+        const btn = document.getElementById('btn-test-bgm');
+        if (btn) btn.textContent = '試聽 BGM';
       }
 
       playTrapStep() {
@@ -2595,41 +2581,259 @@
         this.step++;
       }
 
+      /* 4. COMICAL CARTOON FAIL BGM (Option A: Tuba Bounce & Cheeky Cartoon Staccato) */
+      startGameOverBGM() {
+        if (!this.enabled || this.isMuted) return;
+        this.init();
+        if (this.bgmMode === 'GAMEOVER' && this.bgmTimer) return;
+        this.stopBGM();
+
+        this.bgmMode = 'GAMEOVER';
+        this.gameOverStep = 0;
+        const stepInterval = (60 / 132) / 2 * 1000;
+        this.bgmTimer = setInterval(() => this.playGameOverStep(), stepInterval);
+      }
+
+      playGameOverStep() {
+        if (!this.enabled || !this.ctx || this.isMuted) return;
+        const now = this.ctx.currentTime;
+        const s = this.gameOverStep % 32;
+        const targetDest = this.bgmMasterGain || this.ctx.destination;
+
+        // FAT BOUNCY CARTOON TUBA / LOW BRASS
+        const tubaPattern = [
+          65.41, 0, 98.00, 0,
+          65.41, 0, 98.00, 0,
+          87.31, 0, 130.81, 0,
+          98.00, 0, 116.54, 123.47,
+          130.81, 0, 98.00, 0,
+          130.81, 0, 98.00, 0,
+          73.42, 0, 98.00, 0,
+          98.00, 92.50, 87.31, 65.41
+        ];
+
+        const tFreq = tubaPattern[s];
+        if (tFreq > 0) {
+          const osc = this.ctx.createOscillator();
+          const filter = this.ctx.createBiquadFilter();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(tFreq * 1.18, now);
+          osc.frequency.exponentialRampToValueAtTime(tFreq, now + 0.05);
+
+          filter.type = 'lowpass';
+          filter.Q.value = 4.2;
+          filter.frequency.setValueAtTime(520, now);
+          filter.frequency.exponentialRampToValueAtTime(140, now + 0.22);
+
+          gain.gain.setValueAtTime(0.42, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(targetDest);
+
+          osc.start(now);
+          osc.stop(now + 0.26);
+
+          const sub = this.ctx.createOscillator();
+          const subGain = this.ctx.createGain();
+          sub.type = 'triangle';
+          sub.frequency.setValueAtTime(tFreq * 0.5, now);
+          subGain.gain.setValueAtTime(0.3, now);
+          subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          sub.connect(subGain);
+          subGain.connect(targetDest);
+          sub.start(now);
+          sub.stop(now + 0.22);
+        }
+
+        // CHEEKY CARTOON KAZOO / HORNS STACCATO LEAD
+        const leadPattern = [
+          329.63, 0, 392.00, 440.00,
+          0, 392.00, 0, 329.63,
+          349.23, 0, 329.63, 0,
+          293.66, 0, 261.63, 0,
+          440.00, 0, 523.25, 440.00,
+          0, 392.00, 0, 329.63,
+          293.66, 0, 329.63, 293.66,
+          261.63, 0, 0, 0
+        ];
+
+        const mFreq = leadPattern[s];
+        if (mFreq > 0) {
+          const mOsc = this.ctx.createOscillator();
+          const mFilter = this.ctx.createBiquadFilter();
+          const mGain = this.ctx.createGain();
+
+          mOsc.type = 'square';
+          if (s === 3 || s === 19 || s === 27) {
+            mOsc.frequency.setValueAtTime(mFreq * 0.88, now);
+            mOsc.frequency.exponentialRampToValueAtTime(mFreq, now + 0.04);
+          } else if (s === 28) {
+            mOsc.frequency.setValueAtTime(mFreq, now);
+            mOsc.frequency.exponentialRampToValueAtTime(mFreq * 0.75, now + 0.35);
+          } else {
+            mOsc.frequency.setValueAtTime(mFreq, now);
+          }
+
+          mFilter.type = 'bandpass';
+          mFilter.Q.value = 2.5;
+          mFilter.frequency.setValueAtTime(1100, now);
+
+          const dur = (s === 28) ? 0.38 : 0.16;
+          mGain.gain.setValueAtTime(0.22, now);
+          mGain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+
+          mOsc.connect(mFilter);
+          mFilter.connect(mGain);
+          mGain.connect(targetDest);
+
+          mOsc.start(now);
+          mOsc.stop(now + dur + 0.02);
+        }
+
+        // COMICAL WOODBLOCK PERCUSSION
+        if (s % 4 === 2) {
+          const wOsc = this.ctx.createOscillator();
+          const wGain = this.ctx.createGain();
+          wOsc.type = 'sine';
+          const wFreq = (s % 8 === 2) ? 880 : 1050;
+          wOsc.frequency.setValueAtTime(wFreq, now);
+          wOsc.frequency.exponentialRampToValueAtTime(wFreq * 0.6, now + 0.035);
+
+          wGain.gain.setValueAtTime(0.18, now);
+          wGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+          wOsc.connect(wGain);
+          wGain.connect(targetDest);
+          wOsc.start(now);
+          wOsc.stop(now + 0.045);
+        }
+
+        // CARTOON WHISTLE / SLIP ACCENT ON STEP 31
+        if (s === 31) {
+          const pOsc = this.ctx.createOscillator();
+          const pGain = this.ctx.createGain();
+          pOsc.type = 'triangle';
+          pOsc.frequency.setValueAtTime(500, now);
+          pOsc.frequency.exponentialRampToValueAtTime(150, now + 0.18);
+          pGain.gain.setValueAtTime(0.2, now);
+          pGain.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
+          pOsc.connect(pGain);
+          pGain.connect(targetDest);
+          pOsc.start(now);
+          pOsc.stop(now + 0.2);
+        }
+
+        this.gameOverStep++;
+      }
+
+      /* 5. VOICE QUOTE PLAYBACK (Priority: Custom Upload > GitHub Default WAV > Web Speech TTS) */
       playVoiceQuote(index) {
         if (!this.enabled || this.isMuted || this.voiceVolume <= 0) return;
         this.init();
         this.startDucking();
 
         const quoteTexts = [
-          "去你媽的！",
-          "踢爆你的骨灰罈！",
-          "到底是在靠杯三小啊！"
+          "操你媽！",
+          "你娘機掰咧！",
+          "到底在靠杯三小！"
         ];
-        const clipDataUrl = this.voiceClips[index];
 
-        if (clipDataUrl) {
-          const snd = new Audio(clipDataUrl);
+        // 1. Custom uploaded voice clip has top priority
+        if (this.voiceClips[index]) {
+          const snd = new Audio(this.voiceClips[index]);
           snd.volume = this.voiceVolume;
           snd.onended = () => this.endDucking();
-          snd.onerror = () => this.endDucking();
-          snd.play().catch(e => {
-            console.warn(e);
-            this.endDucking();
-          });
-        } else {
-          if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            const utter = new SpeechSynthesisUtterance(quoteTexts[index]);
-            utter.lang = 'zh-TW';
-            utter.rate = 1.45;
-            utter.pitch = 1.3;
-            utter.volume = this.voiceVolume;
-            utter.onend = () => this.endDucking();
-            utter.onerror = () => this.endDucking();
-            window.speechSynthesis.speak(utter);
-          } else {
-            this.endDucking();
+          let fallback = false;
+          snd.onerror = () => {
+            if (!fallback) {
+              fallback = true;
+              this.playSpeechTTS(quoteTexts[index]);
+            }
+          };
+          const p = snd.play();
+          if (p !== undefined) {
+            p.catch(() => {
+              if (!fallback) {
+                fallback = true;
+                this.playSpeechTTS(quoteTexts[index]);
+              }
+            });
           }
+          return;
+        }
+
+        // 2. Default voice candidates (GitHub Pages, relative, raw)
+        const candidates = this.resolvedVoiceUrls[index]
+          ? [this.resolvedVoiceUrls[index], ...this.defaultVoiceCandidates[index]]
+          : this.defaultVoiceCandidates[index];
+
+        this.playVoiceCandidates(candidates, 0, index, quoteTexts[index]);
+      }
+
+      playVoiceCandidates(candidates, idx, quoteIndex, ttsFallbackText) {
+        if (idx >= candidates.length) {
+          console.warn(`All voice candidates for quote ${quoteIndex} failed, falling back to TTS`);
+          this.playSpeechTTS(ttsFallbackText);
+          return;
+        }
+
+        const url = candidates[idx];
+        const snd = new Audio(url);
+        snd.volume = this.voiceVolume;
+        snd.onended = () => this.endDucking();
+        let failed = false;
+        const handleFail = async () => {
+          if (failed) return;
+          failed = true;
+          if (url.startsWith('http')) {
+            try {
+              const res = await fetch(url);
+              if (res.ok) {
+                const blob = await res.blob();
+                const blobUrl = URL.createObjectURL(new Blob([blob], { type: 'audio/wav' }));
+                const blobSnd = new Audio(blobUrl);
+                blobSnd.volume = this.voiceVolume;
+                blobSnd.onended = () => this.endDucking();
+                const p = blobSnd.play();
+                if (p !== undefined) {
+                  await p;
+                  this.resolvedVoiceUrls[quoteIndex] = blobUrl;
+                  return;
+                }
+              }
+            } catch (e) {}
+          }
+          this.playVoiceCandidates(candidates, idx + 1, quoteIndex, ttsFallbackText);
+        };
+
+        snd.onerror = handleFail;
+        const p = snd.play();
+        if (p !== undefined) {
+          p.then(() => {
+            this.resolvedVoiceUrls[quoteIndex] = url;
+          }).catch(handleFail);
+        } else {
+          this.resolvedVoiceUrls[quoteIndex] = url;
+        }
+      }
+
+      playSpeechTTS(text) {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const utter = new SpeechSynthesisUtterance(text);
+          utter.lang = 'zh-TW';
+          utter.rate = 1.45;
+          utter.pitch = 1.3;
+          utter.volume = this.voiceVolume;
+          utter.onend = () => this.endDucking();
+          utter.onerror = () => this.endDucking();
+          window.speechSynthesis.speak(utter);
+        } else {
+          this.endDucking();
         }
       }
 
@@ -2732,7 +2936,7 @@
       }
 
       playGameOverCut() {
-        if (!this.enabled || !this.ctx) return;
+        if (!this.enabled) return;
         this.stopBGM();
         if (this.isMuted) return;
         const now = this.ctx.currentTime;
@@ -2778,9 +2982,9 @@
     ];
 
     const HAGENG_QUOTES = [
-      "去你媽的！",
-      "踢爆你的骨灰罈！",
-      "到底是在靠杯三小啊！"
+      "操你媽！",
+      "你娘機掰咧！",
+      "到底在靠杯三小！"
     ];
 
     /* ==========================================================
@@ -2806,7 +3010,61 @@
 
         this.lastHeartbeatTime = 0;
         this.memeImages = { 0: null, 1: null, 2: null, 3: null };
+        this.defaultMemeImages = {
+          0: 'https://amalex0610.github.io/hageng-anti-tilt-battle/stage_0.webp',
+          1: 'https://amalex0610.github.io/hageng-anti-tilt-battle/stage_1.webp',
+          2: 'https://amalex0610.github.io/hageng-anti-tilt-battle/stage_2.webp',
+          3: 'https://amalex0610.github.io/hageng-anti-tilt-battle/stage_3.webp'
+        };
+        this.defaultImageCandidates = {
+          cover: [
+            './stage_0.webp',
+            'https://amalex0610.github.io/hageng-anti-tilt-battle/stage_0.webp',
+            'https://raw.githubusercontent.com/amalex0610/hageng-anti-tilt-battle/main/stage_0.webp',
+            './stage_0',
+            './stage_0.png',
+            './stage_0.jpg'
+          ],
+          0: [
+            './stage_0.webp',
+            'https://amalex0610.github.io/hageng-anti-tilt-battle/stage_0.webp',
+            'https://raw.githubusercontent.com/amalex0610/hageng-anti-tilt-battle/main/stage_0.webp',
+            './stage_0',
+            './stage_0.png',
+            './stage_0.jpg'
+          ],
+          1: [
+            './stage_1.webp',
+            'https://amalex0610.github.io/hageng-anti-tilt-battle/stage_1.webp',
+            'https://raw.githubusercontent.com/amalex0610/hageng-anti-tilt-battle/main/stage_1.webp',
+            './stage_1',
+            './stage_1.png',
+            './stage_1.jpg'
+          ],
+          2: [
+            './stage_2.webp',
+            'https://amalex0610.github.io/hageng-anti-tilt-battle/stage_2.webp',
+            'https://raw.githubusercontent.com/amalex0610/hageng-anti-tilt-battle/main/stage_2.webp',
+            './stage_2',
+            './stage_2.png',
+            './stage_2.jpg'
+          ],
+          3: [
+            './stage_3.webp',
+            'https://amalex0610.github.io/hageng-anti-tilt-battle/stage_3.webp',
+            'https://raw.githubusercontent.com/amalex0610/hageng-anti-tilt-battle/main/stage_3.webp',
+            './stage_3',
+            './stage_3.png',
+            './stage_3.jpg'
+          ]
+        };
+
+        this.resolvedCoverPhoto = null;
+        this.resolvedMemeImages = { 0: null, 1: null, 2: null, 3: null };
+        this.failedMemeImages = { 0: false, 1: false, 2: false, 3: false };
+
         this.coverPhoto = null;
+        this.defaultCoverPhoto = './stage_0.webp';
         this.coverSettings = { zoom: 100, mode: 'cover', posX: 50, posY: 50 };
         this.memeSettings = {
           0: { zoom: 100, mode: 'cover', posX: 50, posY: 50 },
@@ -2818,7 +3076,53 @@
 
         this.loadStorage();
         this.initDOM();
+        this.resolveAllDefaultImages();
         this.initEvents();
+      }
+
+      resolveImageCandidate(candidates, onResolved, onFailed) {
+        let idx = 0;
+        const testNext = () => {
+          if (idx >= candidates.length) {
+            onFailed();
+            return;
+          }
+          const candidateUrl = candidates[idx++];
+          const testImg = new Image();
+          testImg.onload = () => {
+            onResolved(candidateUrl);
+          };
+          testImg.onerror = () => {
+            testNext();
+          };
+          testImg.src = candidateUrl;
+        };
+        testNext();
+      }
+
+      resolveAllDefaultImages() {
+        if (!this.defaultImageCandidates) return;
+        this.resolveImageCandidate(this.defaultImageCandidates.cover, (resolvedUrl) => {
+          this.resolvedCoverPhoto = resolvedUrl;
+          this.updateSettingsUI();
+        }, () => {
+          this.resolvedCoverPhoto = false;
+          this.updateSettingsUI();
+        });
+
+        for (let i = 0; i <= 3; i++) {
+          this.resolveImageCandidate(this.defaultImageCandidates[i], (resolvedUrl) => {
+            this.resolvedMemeImages[i] = resolvedUrl;
+            this.failedMemeImages[i] = false;
+            this.updateSettingsUI();
+            this.updateAvatarVisuals();
+          }, () => {
+            this.resolvedMemeImages[i] = false;
+            this.failedMemeImages[i] = true;
+            this.updateSettingsUI();
+            this.updateAvatarVisuals();
+          });
+        }
       }
 
       defaultImgSettings() {
@@ -3196,11 +3500,14 @@
           });
         }
 
-        // Start Button: Dramatic Transition (Scratch stop -> Shatter bass drop -> Trap BGM)
+        // Start Button: Direct User Gesture (Starts BGM synchronously to bypass Chrome Autoplay block)
         document.getElementById('btn-start-game').addEventListener('click', () => {
           sound.init();
           sound.stopBGM(); // Stop sweet music
           sound.playRecordScratch(); // Scratch!
+
+          // Synchronously trigger BGM inside user gesture!
+          sound.startTrapBGM();
 
           const overlay = document.getElementById('start-overlay');
           document.body.classList.add('shattering');
@@ -3243,6 +3550,7 @@
         // Restart Game Button (Stops Gameover BGM and starts Trap BGM)
         document.getElementById('btn-restart-game').addEventListener('click', () => {
           sound.stopBGM();
+          sound.startTrapBGM();
           document.getElementById('gameover-modal').style.display = 'none';
           this.start();
         });
@@ -3303,7 +3611,7 @@
           this.renderLeaderboard();
         });
 
-        // Reset Settings (All)
+        // Reset Settings (Restore to GitHub Defaults)
         document.getElementById('btn-reset-all').addEventListener('click', () => {
           this.memeImages = { 0: null, 1: null, 2: null, 3: null };
           this.coverPhoto = null;
@@ -3316,7 +3624,10 @@
           };
           sound.voiceClips = [null, null, null];
           sound.customBgmDataUrl = null;
-          if (sound.customBgmAudio) sound.customBgmAudio = null;
+          if (sound.bgmAudioElement) {
+            sound.bgmAudioElement.pause();
+            sound.bgmAudioElement = null;
+          }
           sound.bgmVolume = 0.45;
           sound.voiceVolume = 1.0;
           sound.isMuted = false;
@@ -3324,8 +3635,6 @@
           sound.applyBgmGain();
 
           this.saveStorage();
-          this.coverImg.style.display = 'none';
-          this.coverSvg.style.display = 'block';
           this.updateSettingsUI();
           this.updateAvatarVisuals();
         });
@@ -3535,13 +3844,30 @@
         // 1. Cover Photo Preview & Controls
         const previewCoverImg = document.getElementById('preview-cover-img');
         const previewCoverPlaceholder = document.getElementById('preview-cover-placeholder');
-        if (this.coverPhoto) {
+        const activeCover = this.coverPhoto || ((this.resolvedCoverPhoto !== false) ? this.resolvedCoverPhoto : null);
+
+        if (activeCover) {
           if (previewCoverImg) {
-            previewCoverImg.src = this.coverPhoto;
-            previewCoverImg.style.display = 'block';
-            this.applyImgTransform(previewCoverImg, this.coverSettings);
+            if (previewCoverImg.dataset.src !== activeCover) {
+              previewCoverImg.src = activeCover;
+              previewCoverImg.dataset.src = activeCover;
+            }
+            if (previewCoverImg.complete && previewCoverImg.naturalWidth > 0) {
+              previewCoverImg.style.display = 'block';
+              if (previewCoverPlaceholder) previewCoverPlaceholder.style.display = 'none';
+              this.applyImgTransform(previewCoverImg, this.coverSettings);
+            } else {
+              previewCoverImg.onload = () => {
+                previewCoverImg.style.display = 'block';
+                if (previewCoverPlaceholder) previewCoverPlaceholder.style.display = 'none';
+                this.applyImgTransform(previewCoverImg, this.coverSettings);
+              };
+              previewCoverImg.onerror = () => {
+                previewCoverImg.style.display = 'none';
+                if (previewCoverPlaceholder) previewCoverPlaceholder.style.display = 'flex';
+              };
+            }
           }
-          if (previewCoverPlaceholder) previewCoverPlaceholder.style.display = 'none';
         } else {
           if (previewCoverImg) previewCoverImg.style.display = 'none';
           if (previewCoverPlaceholder) previewCoverPlaceholder.style.display = 'flex';
@@ -3570,11 +3896,26 @@
         }
 
         // Apply to start screen avatar
-        if (this.coverPhoto) {
-          this.coverImg.src = this.coverPhoto;
-          this.coverImg.style.display = 'block';
-          this.coverSvg.style.display = 'none';
-          this.applyImgTransform(this.coverImg, this.coverSettings);
+        if (activeCover) {
+          if (this.coverImg.dataset.src !== activeCover) {
+            this.coverImg.src = activeCover;
+            this.coverImg.dataset.src = activeCover;
+          }
+          if (this.coverImg.complete && this.coverImg.naturalWidth > 0) {
+            this.coverImg.style.display = 'block';
+            this.coverSvg.style.display = 'none';
+            this.applyImgTransform(this.coverImg, this.coverSettings);
+          } else {
+            this.coverImg.onload = () => {
+              this.coverImg.style.display = 'block';
+              this.coverSvg.style.display = 'none';
+              this.applyImgTransform(this.coverImg, this.coverSettings);
+            };
+            this.coverImg.onerror = () => {
+              this.coverImg.style.display = 'none';
+              this.coverSvg.style.display = 'block';
+            };
+          }
         } else {
           this.coverImg.style.display = 'none';
           this.coverSvg.style.display = 'block';
@@ -3585,13 +3926,31 @@
           const s = this.memeSettings[i] || { zoom: 100, mode: 'cover', posX: 50, posY: 50 };
           const img = document.getElementById(`preview-stage-img-${i}`);
           const placeholder = document.getElementById(`placeholder-stage-${i}`);
-          if (this.memeImages[i]) {
+          const resolvedSrc = (this.resolvedMemeImages[i] !== false) ? this.resolvedMemeImages[i] : null;
+          const activeStageSrc = this.memeImages[i] || resolvedSrc;
+
+          if (activeStageSrc && !this.failedMemeImages[i]) {
             if (img) {
-              img.src = this.memeImages[i];
-              img.style.display = 'block';
-              this.applyImgTransform(img, s);
+              if (img.dataset.src !== activeStageSrc) {
+                img.src = activeStageSrc;
+                img.dataset.src = activeStageSrc;
+              }
+              if (img.complete && img.naturalWidth > 0) {
+                img.style.display = 'block';
+                if (placeholder) placeholder.style.display = 'none';
+                this.applyImgTransform(img, s);
+              } else {
+                img.onload = () => {
+                  img.style.display = 'block';
+                  if (placeholder) placeholder.style.display = 'none';
+                  this.applyImgTransform(img, s);
+                };
+                img.onerror = () => {
+                  img.style.display = 'none';
+                  if (placeholder) placeholder.style.display = 'block';
+                };
+              }
             }
-            if (placeholder) placeholder.style.display = 'none';
           } else {
             if (img) img.style.display = 'none';
             if (placeholder) placeholder.style.display = 'block';
@@ -3620,7 +3979,7 @@
           }
         }
 
-        // 3. Audio & Voice Sliders Sync (Settings Modal & Header Quick Bar)
+        // 3. Audio & Voice Sliders Sync
         const bgmPercent = Math.round(sound.bgmVolume * 100);
         const voicePercent = Math.round(sound.voiceVolume * 100);
 
@@ -3649,26 +4008,35 @@
         if (headerMuteIcon) headerMuteIcon.textContent = sound.isMuted ? '🔊 解除靜音' : '🔇 一鍵靜音';
 
         const soundIcon = document.getElementById('sound-icon');
-        if (soundIcon) soundIcon.textContent = sound.isMuted ? '🔇 靜音中' : '🔊 狂暴 Trap';
+        if (soundIcon) soundIcon.textContent = sound.isMuted ? '🔇 靜音中' : '🔊 實況 BGM';
 
         const btnSoundToggle = document.getElementById('btn-sound-toggle');
         if (btnSoundToggle) btnSoundToggle.classList.toggle('muted', sound.isMuted);
 
         // 5. Voice clips and BGM status labels
+        const defaultVoiceNames = ['cnm.wav', 'lnjb.wav', 'cbsx.wav'];
         for (let v = 0; v < 3; v++) {
           const status = document.getElementById(`voice-status-${v}`);
-          if (sound.voiceClips[v]) {
-            status.textContent = '✅ 已上傳哈耿原聲音檔';
-            status.style.color = '#00f593';
-          } else {
-            status.textContent = '預設語音合成';
-            status.style.color = '#888';
+          if (status) {
+            if (sound.voiceClips[v]) {
+              status.textContent = '✅ 已上傳自訂原聲覆蓋';
+              status.style.color = '#00f593';
+            } else {
+              status.textContent = `🎙️ GitHub 預設原聲 (${defaultVoiceNames[v]})`;
+              status.style.color = '#ffb800';
+            }
           }
         }
-        if (sound.customBgmDataUrl) {
-          document.getElementById('lbl-bgm-status').textContent = '已啟用自訂 BGM 音樂';
-        } else {
-          document.getElementById('lbl-bgm-status').textContent = '狂暴 Trap / 808 重低音 (內建合成)';
+
+        const lblBgm = document.getElementById('lbl-bgm-status');
+        if (lblBgm) {
+          if (sound.customBgmDataUrl) {
+            lblBgm.textContent = '✅ 已啟用自訂上傳 BGM 音樂';
+            lblBgm.style.color = '#00f593';
+          } else {
+            lblBgm.textContent = '狂暴 Trap / 808 重低音 (內建合成)';
+            lblBgm.style.color = '#ffb800';
+          }
         }
       }
 
@@ -3693,7 +4061,9 @@
 
         this.updateHUD();
         this.updateAvatarVisuals();
-        sound.startTrapBGM();
+        if (sound.bgmMode !== 'CUSTOM' && sound.bgmMode !== 'DEFAULT_BGM' && sound.bgmMode !== 'TRAP') {
+          sound.startTrapBGM();
+        }
 
         this.lastTime = performance.now();
         requestAnimationFrame((t) => this.gameLoop(t));
@@ -4091,6 +4461,32 @@
         this.elViewers.textContent = this.viewers.toLocaleString();
       }
 
+      renderProceduralSVG(stage) {
+        this.svgAvatar.style.display = 'block';
+        this.svgWater.style.display = 'none';
+        this.svgEyes0.style.display = 'none';
+        this.svgEyes1.style.display = 'none';
+        this.svgEyes2.style.display = 'none';
+        this.svgMouth0.style.display = 'none';
+        this.svgMouth1.style.display = 'none';
+        this.svgMouth2.style.display = 'none';
+        this.svgDisconnect.style.display = 'none';
+
+        if (stage === 0) {
+          this.svgEyes0.style.display = 'inline';
+          this.svgMouth0.style.display = 'inline';
+        } else if (stage === 1) {
+          this.svgEyes1.style.display = 'inline';
+          this.svgMouth1.style.display = 'inline';
+          this.svgWater.style.display = 'inline';
+        } else if (stage === 2) {
+          this.svgEyes2.style.display = 'inline';
+          this.svgMouth2.style.display = 'inline';
+        } else if (stage === 3) {
+          this.svgDisconnect.style.display = 'inline';
+        }
+      }
+
       updateAvatarVisuals() {
         let stage = 0;
         if (this.tilt >= 100) stage = 3;
@@ -4102,48 +4498,56 @@
         if (stage === 1) this.elWebcam.classList.add('tilt-high');
         if (stage >= 2) this.elWebcam.classList.add('tilt-extreme');
 
-        const customMemeSrc = this.memeImages[stage];
+        // Priority 1: User uploaded custom meme
+        // Priority 2: Resolved candidate image (stage_0, stage_0.webp, etc.)
+        const userImg = this.memeImages[stage];
+        const defaultResolved = (this.resolvedMemeImages[stage] !== false) ? this.resolvedMemeImages[stage] : null;
+        const targetSrc = userImg || defaultResolved;
 
-        if (customMemeSrc) {
-          this.svgAvatar.style.display = 'none';
-          this.imgStages.forEach((img, idx) => {
-            if (idx === stage) {
-              img.src = customMemeSrc;
-              this.applyImgTransform(img, this.memeSettings[idx]);
-              img.style.display = 'block';
-            } else {
-              img.style.display = 'none';
+        if (targetSrc && !this.failedMemeImages[stage]) {
+          let targetImgEl = this.imgStages[stage];
+          if (targetImgEl) {
+            if (targetImgEl.dataset.src !== targetSrc) {
+              targetImgEl.src = targetSrc;
+              targetImgEl.dataset.src = targetSrc;
             }
+
+            // Only switch display to image if it is verified loaded or when it loads
+            if (targetImgEl.complete && targetImgEl.naturalWidth > 0) {
+              this.applyImgTransform(targetImgEl, this.memeSettings[stage]);
+              targetImgEl.style.display = 'block';
+              this.svgAvatar.style.display = 'none';
+            } else {
+              // While image is loading, keep SVG active to prevent black screen!
+              this.renderProceduralSVG(stage);
+              this.svgAvatar.style.display = 'block';
+
+              targetImgEl.onload = () => {
+                this.applyImgTransform(targetImgEl, this.memeSettings[stage]);
+                targetImgEl.style.display = 'block';
+                this.svgAvatar.style.display = 'none';
+              };
+              targetImgEl.onerror = () => {
+                console.warn(`Stage ${stage} image failed to render, falling back to SVG`);
+                this.failedMemeImages[stage] = true;
+                targetImgEl.style.display = 'none';
+                this.renderProceduralSVG(stage);
+                this.svgAvatar.style.display = 'block';
+              };
+            }
+          }
+
+          // Hide all other stage images
+          this.imgStages.forEach((img, idx) => {
+            if (idx !== stage) img.style.display = 'none';
           });
         } else {
+          // If no custom and no default image exists, or image failed, ALWAYS render SVG
           this.imgStages.forEach(img => img.style.display = 'none');
+          this.renderProceduralSVG(stage);
           this.svgAvatar.style.display = 'block';
-
-          this.svgWater.style.display = 'none';
-          this.svgEyes0.style.display = 'none';
-          this.svgEyes1.style.display = 'none';
-          this.svgEyes2.style.display = 'none';
-          this.svgMouth0.style.display = 'none';
-          this.svgMouth1.style.display = 'none';
-          this.svgMouth2.style.display = 'none';
-          this.svgDisconnect.style.display = 'none';
-
-          if (stage === 0) {
-            this.svgEyes0.style.display = 'inline';
-            this.svgMouth0.style.display = 'inline';
-          } else if (stage === 1) {
-            this.svgEyes1.style.display = 'inline';
-            this.svgMouth1.style.display = 'inline';
-            this.svgWater.style.display = 'inline';
-          } else if (stage === 2) {
-            this.svgEyes2.style.display = 'inline';
-            this.svgMouth2.style.display = 'inline';
-          } else if (stage === 3) {
-            this.svgDisconnect.style.display = 'inline';
-          }
         }
-      }
-    }
+      }    }
 
     window.addEventListener('DOMContentLoaded', () => {
       window.gameInstance = new Game();
