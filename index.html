@@ -1,0 +1,2727 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>《哈耿的精緻日常》➔《哈耿的抗破防大作戰》</title>
+  <style>
+    :root {
+      --bg-dark: #0e0e10;
+      --bg-surface: #18181b;
+      --bg-secondary: #1f1f23;
+      --twitch-purple: #9146ff;
+      --twitch-purple-hover: #772ce8;
+      --text-main: #ffffff;
+      --text-muted: #adadb8;
+      --heart-pink: #ff2d60;
+      --ban-red: #ff1a1a;
+      --safe-green: #00f593;
+      --warning-yellow: #ffb800;
+      --border-color: #2f2f35;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang TC", "Microsoft JhengHei", sans-serif;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      height: 52px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .stream-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    .live-badge {
+      background: #eb0400;
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      animation: pulse-live 1.5s infinite;
+    }
+
+    @keyframes pulse-live {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .stream-title {
+      font-size: 16px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .icon-btn:hover { background: #2a2a30; }
+    .icon-btn:active { transform: scale(0.95); }
+
+    #app-container {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 52px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #stream-stage {
+      flex: 1;
+      position: relative;
+      background: radial-gradient(circle at center, #241432 0%, #0a0812 100%);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #viewport-shaker {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hud-top {
+      position: absolute;
+      top: 14px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    .tilt-wrapper {
+      background: rgba(20, 20, 24, 0.92);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 10px 18px;
+      min-width: 290px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    }
+
+    .tilt-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .tilt-meter-bar-bg {
+      width: 100%;
+      height: 18px;
+      background: #111;
+      border-radius: 9px;
+      overflow: hidden;
+      border: 1.5px solid #444;
+      position: relative;
+    }
+
+    .tilt-meter-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00f593 0%, #ffb800 60%, #ff1a1a 90%);
+      transition: width 0.16s cubic-bezier(0.2, 0.8, 0.4, 1);
+      box-shadow: 0 0 14px rgba(0,245,147,0.6);
+    }
+
+    .stats-card {
+      background: rgba(20, 20, 24, 0.92);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 10px 18px;
+      display: flex;
+      gap: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      pointer-events: auto;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-val {
+      font-size: 22px;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    #webcam-container {
+      width: min(84vw, 450px);
+      aspect-ratio: 4 / 3;
+      background: #141417;
+      border: 4px solid #444452;
+      border-radius: 18px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.75);
+      overflow: visible;
+      z-index: 20;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    #webcam-container.tilt-high {
+      border-color: #ffb800;
+      box-shadow: 0 0 35px rgba(255, 184, 0, 0.5);
+    }
+
+    #webcam-container.tilt-extreme {
+      border-color: #ff1a1a;
+      box-shadow: 0 0 55px rgba(255, 26, 26, 0.8);
+      animation: webcam-twitch 0.08s infinite alternate;
+    }
+
+    @keyframes webcam-twitch {
+      0% { transform: translate(-3px, 2px) rotate(-0.8deg); }
+      100% { transform: translate(3px, -2px) rotate(0.8deg); }
+    }
+
+    .webcam-header {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #dedede;
+      background: rgba(0,0,0,0.65);
+      padding: 4px 10px;
+      border-radius: 6px;
+      z-index: 25;
+    }
+
+    .rec-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #ff1a1a;
+      animation: pulse-live 1s infinite;
+    }
+
+    /* COMFORTABLE OVERLAP HIT ZONES (Match text length) */
+    .hit-box-target {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 70px;
+      height: 84px;
+      border-radius: 18px;
+      border: 3.5px dashed rgba(255,255,255,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 22;
+      transition: transform 0.08s, box-shadow 0.08s, border-color 0.12s, background 0.12s;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .hit-target-left {
+      left: -35px;
+    }
+
+    .hit-target-right {
+      right: -35px;
+    }
+
+    .hit-icon-display {
+      font-size: 28px;
+      transition: transform 0.1s, opacity 0.1s;
+      opacity: 0.7;
+    }
+
+    .hit-box-target.pulse-heart {
+      border-color: var(--heart-pink) !important;
+      background: rgba(255, 45, 96, 0.38) !important;
+      transform: translateY(-50%) scale(1.35) !important;
+      box-shadow: 0 0 30px var(--heart-pink) !important;
+    }
+
+    .hit-box-target.pulse-heart .hit-icon-display {
+      opacity: 1 !important;
+      transform: scale(1.25);
+    }
+
+    .hit-box-target.pulse-ban {
+      border-color: var(--ban-red) !important;
+      background: rgba(255, 26, 26, 0.38) !important;
+      transform: translateY(-50%) scale(1.35) rotate(-8deg) !important;
+      box-shadow: 0 0 30px var(--ban-red) !important;
+    }
+
+    .hit-box-target.pulse-ban .hit-icon-display {
+      opacity: 1 !important;
+      transform: scale(1.25);
+    }
+
+    #avatar-viewport {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #181721;
+    }
+
+    .avatar-img-view {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    #procedural-avatar {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    #speech-bubble {
+      position: absolute;
+      top: -70px;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      background: #fff;
+      color: #000;
+      padding: 10px 22px;
+      border-radius: 16px;
+      font-weight: 900;
+      font-size: 24px;
+      white-space: nowrap;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      z-index: 35;
+      transition: transform 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      border: 3px solid #000;
+      pointer-events: none;
+    }
+
+    #speech-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 12px 12px 0;
+      border-style: solid;
+      border-color: #fff transparent transparent;
+    }
+
+    #speech-bubble.active {
+      transform: translateX(-50%) scale(1);
+    }
+
+    #danmaku-stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 15;
+    }
+
+    .danmaku-item {
+      position: absolute;
+      white-space: nowrap;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 24px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+      transform: translateY(-50%);
+      pointer-events: auto;
+      text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+    }
+
+    .danmaku-item.type-praise {
+      background: linear-gradient(135deg, rgba(65, 14, 38, 0.95) 0%, rgba(130, 28, 77, 0.95) 100%);
+      border: 3px solid #ff4b98;
+      color: #fff;
+    }
+
+    .danmaku-item.type-praise .badge {
+      background: #ff4b98;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 12px;
+      text-shadow: none;
+    }
+
+    .danmaku-item.type-troll {
+      background: linear-gradient(135deg, rgba(50, 10, 10, 0.95) 0%, rgba(110, 20, 20, 0.95) 100%);
+      border: 3px solid #ff2b2b;
+      color: #fff;
+    }
+
+    .danmaku-item.type-troll .badge {
+      background: #ff2b2b;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 12px;
+      text-shadow: none;
+    }
+
+    .feedback-popup {
+      position: absolute;
+      font-size: 26px;
+      font-weight: 900;
+      pointer-events: none;
+      z-index: 50;
+      animation: float-up 0.8s forwards cubic-bezier(0.2, 0.8, 0.4, 1);
+      text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 0 4px 10px rgba(0,0,0,0.8);
+    }
+
+    @keyframes float-up {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.6); }
+      50% { opacity: 1; transform: translate(-50%, -75%) scale(1.2); }
+      100% { opacity: 0; transform: translate(-50%, -100%) scale(1); }
+    }
+
+    #damage-vignette {
+      position: absolute;
+      inset: 0;
+      box-shadow: inset 0 0 70px rgba(255, 26, 26, 0);
+      pointer-events: none;
+      z-index: 40;
+      transition: box-shadow 0.2s;
+    }
+
+    #damage-vignette.hit {
+      box-shadow: inset 0 0 120px rgba(255, 26, 26, 0.9);
+    }
+
+    #control-dock {
+      height: 140px;
+      background: var(--bg-surface);
+      border-top: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 10px 18px;
+      z-index: 90;
+      gap: 18px;
+      flex-shrink: 0;
+    }
+
+    .action-button {
+      flex: 1;
+      max-width: 380px;
+      height: 96px;
+      border-radius: 16px;
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+      transition: transform 0.06s, filter 0.15s;
+    }
+
+    .action-button:active {
+      transform: translateY(4px) scale(0.97);
+    }
+
+    .btn-heart {
+      background: linear-gradient(135deg, #ff2d60 0%, #d4144b 100%);
+      border-bottom: 5px solid #9c0c35;
+    }
+
+    .btn-ban {
+      background: linear-gradient(135deg, #ff1a1a 0%, #b80000 100%);
+      border-bottom: 5px solid #750000;
+    }
+
+    .btn-icon-row {
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-title {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-key-badge {
+      font-size: 14px;
+      background: rgba(0,0,0,0.4);
+      padding: 3px 12px;
+      border-radius: 8px;
+      margin-top: 4px;
+      font-weight: 700;
+    }
+
+    #sidebar-chat {
+      width: 320px;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .chat-header {
+      height: 52px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-main);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .chat-row { word-break: break-word; }
+    .chat-user { font-weight: 800; margin-right: 6px; }
+    .chat-text { color: #f0f0f0; }
+
+    /* START OVERLAY DECEPTION CARD */
+    #start-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #2c1b35 0%, #151121 50%, #20132b 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 16px;
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    .sakura-petal {
+      position: absolute;
+      background: #ffb7c5;
+      border-radius: 150% 0 150% 0;
+      opacity: 0.7;
+      pointer-events: none;
+      animation: float-sakura 6s infinite linear;
+    }
+
+    @keyframes float-sakura {
+      0% { transform: translate(0, -20px) rotate(0deg); opacity: 0; }
+      15% { opacity: 0.8; }
+      100% { transform: translate(120px, 100vh) rotate(360deg); opacity: 0; }
+    }
+
+    .deception-card {
+      background: rgba(36, 26, 48, 0.88);
+      border: 2px solid #ffb7c5;
+      box-shadow: 0 16px 40px rgba(255, 183, 197, 0.25);
+      border-radius: 24px;
+      max-width: 540px;
+      width: 100%;
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .fake-logo {
+      font-size: 28px;
+      font-weight: 900;
+      color: #ffe0e9;
+      margin-bottom: 6px;
+      text-shadow: 0 0 15px rgba(255, 183, 197, 0.8);
+    }
+
+    .fake-subtitle {
+      font-size: 15px;
+      color: #ffcad7;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .sweet-bgm-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffb7c5;
+      background: rgba(255, 183, 197, 0.15);
+      border: 1px solid #ffb7c5;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .beauty-photo-frame {
+      width: 185px;
+      height: 185px;
+      border-radius: 50%;
+      border: 4px solid #ffb7c5;
+      box-shadow: 0 0 25px rgba(255, 183, 197, 0.6);
+      overflow: hidden;
+      margin-bottom: 14px;
+      position: relative;
+      background: #2b1b36;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .beauty-photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .start-menu-btn-row {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      margin-bottom: 14px;
+    }
+
+    .btn-menu-action {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffe0e9;
+      border: 1.5px solid #ffb7c5;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s, transform 0.08s;
+    }
+
+    .btn-menu-action:active { transform: scale(0.97); }
+
+    .tutorial-box {
+      width: 100%;
+      background: rgba(18, 14, 25, 0.88);
+      border-radius: 14px;
+      border: 1px solid #443555;
+      padding: 12px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .tutorial-title {
+      font-size: 14px;
+      font-weight: 900;
+      color: #ffd4e0;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .tutorial-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .tut-card {
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .tut-card.pink {
+      background: rgba(255, 45, 96, 0.15);
+      border: 1px solid var(--heart-pink);
+    }
+
+    .tut-card.red {
+      background: rgba(255, 26, 26, 0.15);
+      border: 1px solid var(--ban-red);
+    }
+
+    .tut-card b {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+
+    .btn-start-sweet {
+      background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+      color: #fff;
+      border: none;
+      font-size: 22px;
+      font-weight: 900;
+      padding: 15px 32px;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(255, 117, 140, 0.5);
+      transition: transform 0.1s, filter 0.15s;
+      width: 100%;
+    }
+
+    .btn-start-sweet:active { transform: scale(0.97); }
+
+    @keyframes screen-shatter {
+      0% { filter: invert(0) contrast(1); transform: scale(1); }
+      20% { filter: invert(1) contrast(2); transform: scale(1.1) rotate(2.5deg); }
+      40% { filter: invert(0) contrast(2); transform: scale(0.92) rotate(-2.5deg); }
+      60% { filter: contrast(3) hue-rotate(180deg); transform: scale(1.06); }
+      100% { filter: invert(0) contrast(1); transform: scale(1); }
+    }
+
+    .shattering { animation: screen-shatter 0.5s ease forwards; }
+
+    /* MODAL STYLES */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .modal-dialog {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border-color);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+      position: relative;
+    }
+
+    .modal-title {
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .settings-section-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--twitch-purple);
+      margin: 18px 0 10px 0;
+      border-bottom: 1px solid #333;
+      padding-bottom: 4px;
+    }
+
+    .meme-upload-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .meme-slot {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .meme-preview {
+      width: 100%;
+      height: 100px;
+      background: #111;
+      border-radius: 8px;
+      border: 1px dashed #444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .meme-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .file-input-wrapper input[type=file] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .btn-upload {
+      background: #2a2a30;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 7px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      width: 100%;
+      display: block;
+    }
+
+    .audio-slot-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-surface);
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .audio-btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* LEADERBOARD TABLE */
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 14px;
+    }
+
+    .leaderboard-table th, .leaderboard-table td {
+      padding: 8px 12px;
+      text-align: center;
+      border-bottom: 1px solid #333;
+    }
+
+    .leaderboard-table th {
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .leaderboard-table tr.highlight {
+      background: rgba(145, 70, 255, 0.25);
+      color: #00f593;
+      font-weight: 900;
+    }
+
+    .gameover-summary {
+      background: var(--bg-surface);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+      text-align: left;
+      font-size: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .summary-row b { color: #fff; }
+
+    .btn-primary {
+      background: var(--twitch-purple);
+      color: #fff;
+      border: none;
+      font-size: 18px;
+      font-weight: 900;
+      padding: 14px 28px;
+      border-radius: 12px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.15s;
+    }
+
+    .btn-primary:hover { background: var(--twitch-purple-hover); }
+
+    @media (max-width: 900px) {
+      #sidebar-chat { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .stream-title { max-width: 170px; }
+      #control-dock {
+        height: 120px;
+        padding: 8px 12px;
+      }
+      .action-button { height: 84px; }
+      .btn-icon-row { font-size: 26px; }
+      .btn-title { font-size: 18px; }
+      .btn-key-badge { font-size: 11px; }
+      .hud-top {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .tilt-wrapper { min-width: 100%; }
+      .stats-card { width: 100%; justify-content: space-around; }
+      .danmaku-item { font-size: 20px; padding: 8px 14px; }
+      .danmaku-item .badge { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="stream-meta">
+      <span class="live-badge">LIVE</span>
+      <span class="stream-title" id="top-stream-title">【哈耿】今天絕對不破防！優雅氣質技術台 | !DC !周邊 !倒立</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="btn-sound-toggle" title="切換音效">
+        <span id="sound-icon">🔊 狂暴 Trap</span>
+      </button>
+    </div>
+  </header>
+
+  <div id="app-container">
+
+    <main id="stream-stage">
+      <div id="viewport-shaker">
+
+        <div class="hud-top">
+          <div class="tilt-wrapper">
+            <div class="tilt-labels">
+              <span id="tilt-status-text">主播心態：優雅冷靜</span>
+              <span id="tilt-percent-text">0% 破防</span>
+            </div>
+            <div class="tilt-meter-bar-bg">
+              <div class="tilt-meter-bar-fill" id="tilt-bar-fill"></div>
+            </div>
+          </div>
+
+          <div class="stats-card">
+            <div class="stat-item">
+              <div class="stat-val" id="stat-viewers">12,480</div>
+              <div class="stat-label">觀看人數</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-val" id="stat-combo">0</div>
+              <div class="stat-label">COMBO</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-val" id="stat-score">0</div>
+              <div class="stat-label">實況人氣積分</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="danmaku-stage"></div>
+
+        <div id="webcam-container">
+          <div class="webcam-header">
+            <span class="rec-dot"></span>
+            <span>HAGENG_CAM 1080p60</span>
+          </div>
+
+          <div id="speech-bubble">去你媽的！</div>
+
+          <div class="hit-box-target hit-target-left" id="hitbox-left" title="左側判定圈">
+            <span class="hit-icon-display" id="hit-icon-left">🎯</span>
+          </div>
+
+          <div class="hit-box-target hit-target-right" id="hitbox-right" title="右側判定圈">
+            <span class="hit-icon-display" id="hit-icon-right">🎯</span>
+          </div>
+
+          <div id="avatar-viewport">
+            <img id="img-stage-0" class="avatar-img-view" alt="Stage 0 Normal" />
+            <img id="img-stage-1" class="avatar-img-view" alt="Stage 1 Twitching" />
+            <img id="img-stage-2" class="avatar-img-view" alt="Stage 2 Raging" />
+            <img id="img-stage-3" class="avatar-img-view" alt="Stage 3 Stream Disconnected" />
+
+            <svg id="procedural-avatar" viewBox="0 0 400 300">
+              <defs>
+                <linearGradient id="bg-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#2a2538"/>
+                  <stop offset="100%" stop-color="#14111d"/>
+                </linearGradient>
+                <radialGradient id="blush-grad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#ff7b92" stop-opacity="0.6"/>
+                  <stop offset="100%" stop-color="#ff7b92" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+
+              <rect width="400" height="300" fill="url(#bg-grad)"/>
+              <rect x="30" y="20" width="40" height="40" rx="4" fill="#38334a" opacity="0.4"/>
+              <rect x="30" y="70" width="40" height="40" rx="4" fill="#38334a" opacity="0.4"/>
+              <rect x="330" y="20" width="40" height="40" rx="4" fill="#38334a" opacity="0.4"/>
+              <rect x="330" y="70" width="40" height="40" rx="4" fill="#38334a" opacity="0.4"/>
+
+              <path d="M140 100 Q200 80 260 100 L270 260 L130 260 Z" fill="#4d1b7b"/>
+              <path d="M155 110 Q200 95 245 110 L250 250 L150 250 Z" fill="#6824a3"/>
+
+              <g id="avatar-body">
+                <path d="M140 240 Q200 220 260 240 L280 300 L120 300 Z" fill="#2d2d38"/>
+                <path d="M185 240 Q200 255 215 240" stroke="#ff4b72" stroke-width="4" fill="none"/>
+              </g>
+
+              <g id="prop-water-bottle" style="display:none;" transform="translate(240, 160)">
+                <rect x="0" y="10" width="30" height="58" rx="6" fill="#4db8ff" opacity="0.9"/>
+                <rect x="6" y="0" width="18" height="12" rx="2" fill="#fff"/>
+                <text x="5" y="44" font-size="11" fill="#fff" font-weight="900">壓驚</text>
+              </g>
+
+              <ellipse cx="200" cy="165" rx="55" ry="60" fill="#2b1a13"/>
+              <path id="avatar-face" d="M150 160 Q150 225 200 225 Q250 225 250 160 Q250 120 200 120 Q150 120 150 160 Z" fill="#ffe2d1"/>
+              <circle id="blush-left" cx="168" cy="180" r="10" fill="url(#blush-grad)"/>
+              <circle id="blush-right" cx="232" cy="180" r="10" fill="url(#blush-grad)"/>
+
+              <g id="eyes-stage-0">
+                <ellipse cx="178" cy="162" rx="9" ry="12" fill="#24140e"/>
+                <ellipse cx="222" cy="162" rx="9" ry="12" fill="#24140e"/>
+                <circle cx="176" cy="158" r="4" fill="#fff"/>
+                <circle cx="220" cy="158" r="4" fill="#fff"/>
+                <circle cx="180" cy="166" r="2" fill="#fff"/>
+                <circle cx="224" cy="166" r="2" fill="#fff"/>
+              </g>
+
+              <g id="eyes-stage-1" style="display:none;">
+                <circle cx="178" cy="164" r="8" fill="#111"/>
+                <circle cx="222" cy="164" r="8" fill="#111"/>
+                <circle cx="178" cy="164" r="3" fill="#666"/>
+                <circle cx="222" cy="164" r="3" fill="#666"/>
+                <line x1="165" y1="148" x2="190" y2="154" stroke="#2b1a13" stroke-width="3" stroke-linecap="round"/>
+                <line x1="235" y1="148" x2="210" y2="152" stroke="#2b1a13" stroke-width="3" stroke-linecap="round"/>
+                <path d="M152 145 Q145 155 152 160 Q159 155 152 145 Z" fill="#58c4ff"/>
+              </g>
+
+              <g id="eyes-stage-2" style="display:none;">
+                <polygon points="168,155 190,165 170,170" fill="#eb0400"/>
+                <polygon points="232,155 210,165 230,170" fill="#eb0400"/>
+                <path d="M236 135 L244 143 M244 135 L236 143 M240 131 L240 147" stroke="#eb0400" stroke-width="3" stroke-linecap="round"/>
+              </g>
+
+              <path id="mouth-stage-0" d="M190 190 Q200 200 210 190" stroke="#cf5267" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+              <path id="mouth-stage-1" d="M190 192 Q195 186 200 194 Q205 188 212 192" stroke="#444" stroke-width="3" fill="none" style="display:none;" stroke-linecap="round"/>
+              <path id="mouth-stage-2" d="M185 188 Q200 218 215 188 Z" fill="#eb0400" stroke="#750000" stroke-width="2" style="display:none;"/>
+
+              <path d="M145 145 Q170 120 200 130 Q230 120 255 145 Q245 180 250 215 L240 210 Q242 165 235 150 Q215 135 200 150 Q185 135 165 150 Q158 165 160 210 L150 215 Q155 180 145 145 Z" fill="#3b241a"/>
+
+              <path d="M135 160 Q135 105 200 105 Q265 105 265 160" stroke="#ff4b98" stroke-width="8" fill="none"/>
+              <rect x="130" y="145" width="14" height="35" rx="6" fill="#333" stroke="#ff4b98" stroke-width="2"/>
+              <rect x="256" y="145" width="14" height="35" rx="6" fill="#333" stroke="#ff4b98" stroke-width="2"/>
+              <path d="M136 170 Q145 200 175 200" stroke="#555" stroke-width="4" fill="none"/>
+              <circle cx="178" cy="200" r="5" fill="#111"/>
+
+              <g id="stage-disconnect" style="display:none;">
+                <rect width="400" height="300" fill="#000"/>
+                <rect x="20" y="20" width="50" height="180" fill="#fff"/>
+                <rect x="70" y="20" width="50" height="180" fill="#ffff00"/>
+                <rect x="120" y="20" width="50" height="180" fill="#00ffff"/>
+                <rect x="170" y="20" width="50" height="180" fill="#00ff00"/>
+                <rect x="220" y="20" width="50" height="180" fill="#ff00ff"/>
+                <rect x="270" y="20" width="50" height="180" fill="#ff0000"/>
+                <rect x="320" y="20" width="50" height="180" fill="#0000ff"/>
+                <rect x="20" y="200" width="360" height="80" fill="#111"/>
+                <text x="200" y="245" font-size="20" fill="#ff4d4d" font-weight="900" text-anchor="middle">【網路線已被拔除】</text>
+                <text x="200" y="270" font-size="12" fill="#aaa" text-anchor="middle">實況主正在倒立冷靜中...</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div id="damage-vignette"></div>
+
+      </div>
+    </main>
+
+    <aside id="sidebar-chat">
+      <div class="chat-header">實況聊天室 (LIVE CHAT)</div>
+      <div id="chat-messages">
+        <div class="chat-row">
+          <span class="chat-user" style="color: #ff4b72;">[系統]</span>
+          <span class="chat-text">歡迎來到哈耿的抗破防大作戰！</span>
+        </div>
+        <div class="chat-row">
+          <span class="chat-user" style="color: #00f593;">茶爸:</span>
+          <span class="chat-text">主播今天心情看起來不錯喔！</span>
+        </div>
+        <div class="chat-row">
+          <span class="chat-user" style="color: #ffb800;">魔神的右手:</span>
+          <span class="chat-text">先卡一個等等破防拍桌 7777</span>
+        </div>
+        <div class="chat-row">
+          <span class="chat-user" style="color: #4da6ff;">小火藥:</span>
+          <span class="chat-text">釋放小火藥準備就緒 🔥</span>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <footer id="control-dock">
+    <button class="action-button btn-heart" id="btn-action-heart">
+      <div class="btn-icon-row">
+        <span>❤️</span>
+        <span class="btn-title">手比愛心 / 營業甜笑</span>
+      </div>
+      <div class="btn-key-badge">按 [J] 或 [Z] 或 點擊此處</div>
+    </button>
+
+    <button class="action-button btn-ban" id="btn-action-ban">
+      <div class="btn-icon-row">
+        <span>🔨</span>
+        <span class="btn-title">BAN掉 / 桌咚反擊</span>
+      </div>
+      <div class="btn-key-badge">按 [K] 或 [X] 或 點擊此處</div>
+    </button>
+  </footer>
+
+  <!-- START OVERLAY (COVER DECEPTION + SWEET BGM + SETTINGS + TUTORIAL) -->
+  <div id="start-overlay">
+    <div class="sakura-petal" style="left:15%; animation-delay:0s; width:14px; height:18px;"></div>
+    <div class="sakura-petal" style="left:35%; animation-delay:2s; width:12px; height:15px;"></div>
+    <div class="sakura-petal" style="left:60%; animation-delay:1s; width:16px; height:20px;"></div>
+    <div class="sakura-petal" style="left:80%; animation-delay:3.5s; width:13px; height:16px;"></div>
+
+    <div class="deception-card" id="deception-card-box">
+      <div class="fake-logo">🌸 哈耿的精緻日常 🌸</div>
+      <div class="fake-subtitle">治癒系氣質主播體驗～今天也要溫柔優雅喔♡</div>
+
+      <div class="sweet-bgm-indicator" id="btn-sweet-bgm-toggle">
+        <span id="sweet-bgm-icon">🎵 治癒音樂：播放中</span>
+      </div>
+
+      <div class="beauty-photo-frame" id="cover-photo-container">
+        <img id="cover-beauty-img" src="" alt="哈耿美美照片" style="display:none;" />
+        <svg id="default-cover-svg" viewBox="0 0 200 200" width="100%" height="100%">
+          <defs>
+            <linearGradient id="fairyg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffeef2"/>
+              <stop offset="100%" stop-color="#f8c8dc"/>
+            </linearGradient>
+          </defs>
+          <circle cx="100" cy="100" r="100" fill="url(#fairyg)"/>
+          <ellipse cx="100" cy="105" rx="42" ry="48" fill="#ffe2d1"/>
+          <path d="M55 90 Q100 65 145 90 Q150 140 145 160 Q130 115 100 120 Q70 115 55 160 Z" fill="#4a2e1f"/>
+          <ellipse cx="85" cy="102" rx="6" ry="8" fill="#24140e"/>
+          <circle cx="83" cy="99" r="3" fill="#fff"/>
+          <path d="M110 102 Q117 96 124 102" stroke="#24140e" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <circle cx="78" cy="115" r="9" fill="#ff7b92" opacity="0.6"/>
+          <circle cx="122" cy="115" r="9" fill="#ff7b92" opacity="0.6"/>
+          <path d="M93 122 Q100 130 107 122" stroke="#ff4b72" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <circle cx="68" cy="80" r="6" fill="#ff4b98"/>
+          <circle cx="68" cy="80" r="2.5" fill="#fff"/>
+        </svg>
+      </div>
+
+      <div class="start-menu-btn-row">
+        <button class="btn-menu-action" id="btn-open-settings-menu">⚙️ 實況主後台配置 (上傳)</button>
+        <button class="btn-menu-action" id="btn-view-leaderboard-menu">🏆 抗壓天梯榜</button>
+      </div>
+
+      <div class="tutorial-box">
+        <div class="tutorial-title">📖 新手主播實況守則（核心操作）</div>
+        <div class="tutorial-grid">
+          <div class="tut-card pink">
+            <b style="color:var(--heart-pink);">❤️ 正向彈幕（粉紅）</b>
+            彈幕進入左側判定範圍時按 <b>[J]</b> 或點擊左鈕！<br>
+            破防值 -5%，精準進圈給予 PERFECT！<br>
+            <i>⚠️ 誤 BAN 乾爹：破防 +5%</i>
+          </div>
+          <div class="tut-card red">
+            <b style="color:var(--ban-red);">🔨 挑釁彈幕（鮮紅）</b>
+            彈幕進入右側判定範圍時按 <b>[K]</b> 或點擊右鈕！<br>
+            光速桌咚反擊永 BAN，超舒壓打擊！<br>
+            <i>⚠️ 漏掉黑粉：破防狂飆 +20%！</i>
+          </div>
+        </div>
+        <div style="font-size:11.5px; color:#bbb; text-align:center; margin-top:8px;">
+          ⚡ 遊戲難度會隨時間極速狂飆，破防 100% 立即拔線，收益歸零！
+        </div>
+      </div>
+
+      <button class="btn-start-sweet" id="btn-start-game">🌸 開始優雅的一天 🌸</button>
+    </div>
+  </div>
+
+  <!-- CONFIG MODAL -->
+  <div class="modal-backdrop" id="settings-modal">
+    <div class="modal-dialog">
+      <div class="modal-title">⚙️ 實況主後台配置中心</div>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">
+        所有上傳的美圖、音檔與表情包皆永久保存在您的本機瀏覽器中，隨時可開台！
+      </p>
+
+      <div class="settings-section-title">📷 首頁封面美照自訂</div>
+      <div class="audio-slot-row">
+        <span>替換「哈耿的精緻日常」封面照片</span>
+        <div class="file-input-wrapper" style="width:auto;">
+          <button class="icon-btn">上傳美照</button>
+          <input type="file" accept="image/*" id="input-cover-photo">
+        </div>
+      </div>
+
+      <div class="settings-section-title">🎵 實況背景音樂 (BGM) 設定</div>
+      <div class="audio-slot-row">
+        <span>當前遊戲 BGM：<b id="lbl-bgm-status">狂暴 Trap / 808 重低音 (內建合成)</b></span>
+        <div class="file-input-wrapper" style="width:auto;">
+          <button class="icon-btn">上傳自訂 BGM</button>
+          <input type="file" accept="audio/*" id="input-custom-bgm">
+        </div>
+      </div>
+
+      <div class="settings-section-title">🎙️ 哈耿經典語音配置（原聲上傳）</div>
+      
+      <div class="audio-slot-row">
+        <div>
+          <div>1. 「去你媽的！」</div>
+          <small id="voice-status-0" style="color:#888;">預設語音合成</small>
+        </div>
+        <div class="audio-btn-group">
+          <button class="icon-btn" onclick="sound.testVoice(0)">試聽</button>
+          <div class="file-input-wrapper" style="width:auto;">
+            <button class="icon-btn">上傳音檔</button>
+            <input type="file" accept="audio/*" data-voice="0" class="input-voice-file">
+          </div>
+        </div>
+      </div>
+
+      <div class="audio-slot-row">
+        <div>
+          <div>2. 「踢爆你的骨灰罈！」</div>
+          <small id="voice-status-1" style="color:#888;">預設語音合成</small>
+        </div>
+        <div class="audio-btn-group">
+          <button class="icon-btn" onclick="sound.testVoice(1)">試聽</button>
+          <div class="file-input-wrapper" style="width:auto;">
+            <button class="icon-btn">上傳音檔</button>
+            <input type="file" accept="audio/*" data-voice="1" class="input-voice-file">
+          </div>
+        </div>
+      </div>
+
+      <div class="audio-slot-row">
+        <div>
+          <div>3. 「到底是在靠杯三小啊！」</div>
+          <small id="voice-status-2" style="color:#888;">預設語音合成</small>
+        </div>
+        <div class="audio-btn-group">
+          <button class="icon-btn" onclick="sound.testVoice(2)">試聽</button>
+          <div class="file-input-wrapper" style="width:auto;">
+            <button class="icon-btn">上傳音檔</button>
+            <input type="file" accept="audio/*" data-voice="2" class="input-voice-file">
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section-title">🖼️ 哈耿情緒表情包 (4 階段)</div>
+      <div class="meme-upload-grid">
+        <div class="meme-slot">
+          <span style="font-size:13px; font-weight:700;">1. 優雅營業 (0-69%)</span>
+          <div class="meme-preview" id="preview-stage-0"><span style="font-size:12px; color:#888;">預設動漫風</span></div>
+          <div class="file-input-wrapper">
+            <span class="btn-upload">上傳照片</span>
+            <input type="file" accept="image/*" data-stage="0" class="input-meme-file">
+          </div>
+        </div>
+
+        <div class="meme-slot">
+          <span style="font-size:13px; font-weight:700;">2. 抽搐喝水 (70-89%)</span>
+          <div class="meme-preview" id="preview-stage-1"><span style="font-size:12px; color:#888;">預設動漫風</span></div>
+          <div class="file-input-wrapper">
+            <span class="btn-upload">上傳照片</span>
+            <input type="file" accept="image/*" data-stage="1" class="input-meme-file">
+          </div>
+        </div>
+
+        <div class="meme-slot">
+          <span style="font-size:13px; font-weight:700;">3. 暴怒桌咚 (90-99%)</span>
+          <div class="meme-preview" id="preview-stage-2"><span style="font-size:12px; color:#888;">預設動漫風</span></div>
+          <div class="file-input-wrapper">
+            <span class="btn-upload">上傳照片</span>
+            <input type="file" accept="image/*" data-stage="2" class="input-meme-file">
+          </div>
+        </div>
+
+        <div class="meme-slot">
+          <span style="font-size:13px; font-weight:700;">4. 拔線關台 (100% 倒台)</span>
+          <div class="meme-preview" id="preview-stage-3"><span style="font-size:12px; color:#888;">預設動漫風</span></div>
+          <div class="file-input-wrapper">
+            <span class="btn-upload">上傳照片</span>
+            <input type="file" accept="image/*" data-stage="3" class="input-meme-file">
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:12px; margin-top:20px;">
+        <button class="icon-btn" id="btn-reset-all" style="flex:1; justify-content:center;">重設為預設配置</button>
+        <button class="btn-primary" id="btn-close-settings" style="flex:1;">完成並儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME OVER & LEADERBOARD MODAL -->
+  <div class="modal-backdrop" id="gameover-modal">
+    <div class="modal-dialog" style="text-align:center;">
+      <div style="background:#000; color:#ff3333; border:2px dashed #ff3333; padding:12px; border-radius:12px; margin-bottom:16px; font-weight:900; font-size:20px;">
+        ⚠️ 實況中斷：本月圖奇收益已歸零！
+      </div>
+
+      <div class="gameover-summary">
+        <div class="summary-row"><span>開台堅持時間：</span><b id="summary-time">00:45</b></div>
+        <div class="summary-row"><span>吸收愛心數：</span><b id="summary-hearts">28 次</b></div>
+        <div class="summary-row"><span>成功 BAN 人數：</span><b id="summary-bans">34 次</b></div>
+        <div class="summary-row"><span>最高連擊 (Max Combo)：</span><b id="summary-combo">42</b></div>
+        <div class="summary-row"><span>本局實況積分：</span><b id="summary-score" style="color:var(--twitch-purple);">15,200</b></div>
+        <div class="summary-row" style="margin-top:6px; padding-top:6px; border-top:1px solid #333;">
+          <span>主播抗壓稱號：</span><b id="summary-title" style="color:var(--safe-green);">倒立冷靜型實況主</b>
+        </div>
+      </div>
+
+      <div id="record-input-section" style="display:flex; gap:8px; margin-bottom:14px;">
+        <input type="text" id="input-player-name" placeholder="輸入你的稱號 (如: 忠實茶爸)" maxlength="10" 
+               style="flex:1; background:#111; border:1px solid #444; border-radius:8px; padding:8px 12px; color:#fff; font-size:14px; font-weight:700;">
+        <button class="icon-btn" id="btn-submit-score" style="background:var(--twitch-purple);">登錄排行榜</button>
+      </div>
+
+      <div style="font-size:16px; font-weight:900; color:#ffd4e0; margin-bottom:6px;">🏆 實況抗壓名人堂 TOP 5</div>
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>名次</th>
+            <th>主播/乾爹稱號</th>
+            <th>積分</th>
+            <th>堅持時間</th>
+            <th>最大連擊</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-body"></tbody>
+      </table>
+
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button class="icon-btn" id="btn-clear-board" style="padding:10px;">清除榜單</button>
+        <button class="btn-primary" id="btn-restart-game" style="flex:1;">重新開台（再戰黑粉）</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIO ENGINE & SYNTHESIZER (SWEET BGM + TRAP BGM) -->
+  <script>
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+        this.bgmMode = null; // 'SWEET' or 'TRAP'
+        this.bgmTimer = null;
+        this.customBgmAudio = null;
+        this.customBgmDataUrl = null;
+        this.voiceClips = [null, null, null];
+        this.step = 0;
+        this.sweetStep = 0;
+        this.loadAudioConfig();
+      }
+
+      loadAudioConfig() {
+        try {
+          const bgm = localStorage.getItem('hageng_custom_bgm');
+          if (bgm) this.customBgmDataUrl = bgm;
+          const voices = localStorage.getItem('hageng_voice_clips');
+          if (voices) this.voiceClips = JSON.parse(voices);
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+
+      saveAudioConfig() {
+        try {
+          if (this.customBgmDataUrl) {
+            localStorage.setItem('hageng_custom_bgm', this.customBgmDataUrl);
+          } else {
+            localStorage.removeItem('hageng_custom_bgm');
+          }
+          localStorage.setItem('hageng_voice_clips', JSON.stringify(this.voiceClips));
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      /* 1. SWEET KAWAII MUSIC BOX BGM (For Start Screen) */
+      startSweetBGM() {
+        if (!this.enabled) return;
+        this.init();
+        if (this.bgmMode === 'SWEET' && this.bgmTimer) return;
+        this.stopBGM();
+
+        this.bgmMode = 'SWEET';
+        this.sweetStep = 0;
+        const stepInterval = (60 / 106) / 2 * 1000; // 8th notes at 106 BPM
+        this.bgmTimer = setInterval(() => this.playSweetStep(), stepInterval);
+      }
+
+      playSweetStep() {
+        if (!this.enabled || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const s = this.sweetStep % 32;
+
+        // Music Box Melody notes (C Major pentatonic / lullaby / anime opening)
+        // [E5, G5, C6, B5, A5, G5, E5, D5, C5, E5, G5, A5, G5, E5, D5, C5...]
+        const melody = [
+          659.25, 0, 783.99, 0, 1046.50, 0, 987.77, 0,
+          880.00, 0, 783.99, 0, 659.25, 0, 587.33, 0,
+          523.25, 0, 659.25, 0, 783.99, 0, 880.00, 0,
+          783.99, 0, 659.25, 0, 587.33, 0, 523.25, 0
+        ];
+
+        const freq = melody[s];
+        if (freq > 0) {
+          // Celesta / Music Box Sine with high harmonic
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(freq, now);
+
+          osc2.type = 'triangle';
+          osc2.frequency.setValueAtTime(freq * 2, now); // Sweet sparkle chime
+
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc1.start(now);
+          osc2.start(now);
+          osc1.stop(now + 0.45);
+          osc2.stop(now + 0.45);
+        }
+
+        // Gentle bass note on every 4th step
+        if (s % 8 === 0) {
+          const bOsc = this.ctx.createOscillator();
+          const bGain = this.ctx.createGain();
+          const bFreq = (s === 0) ? 130.81 : (s === 8 ? 146.83 : (s === 16 ? 164.81 : 174.61));
+          bOsc.type = 'sine';
+          bOsc.frequency.setValueAtTime(bFreq, now);
+          bGain.gain.setValueAtTime(0.12, now);
+          bGain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+          bOsc.connect(bGain);
+          bGain.connect(this.ctx.destination);
+          bOsc.start(now);
+          bOsc.stop(now + 0.52);
+        }
+
+        this.sweetStep++;
+      }
+
+      /* 2. VINYL RECORD SCRATCH STOP (SUDDEN CRACK) */
+      playRecordScratch() {
+        if (!this.enabled || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(1400, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 0.32);
+
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.36);
+      }
+
+      /* 3. HARDCORE AGGRESSIVE TRAP BGM (Gameplay) */
+      startTrapBGM() {
+        if (!this.enabled) return;
+        this.init();
+        this.stopBGM();
+
+        if (this.customBgmDataUrl) {
+          if (!this.customBgmAudio) {
+            this.customBgmAudio = new Audio(this.customBgmDataUrl);
+            this.customBgmAudio.loop = true;
+          }
+          this.customBgmAudio.play().catch(e => console.log(e));
+          this.bgmMode = 'CUSTOM';
+          return;
+        }
+
+        this.bgmMode = 'TRAP';
+        this.step = 0;
+        const stepInterval = (60 / 140) / 4 * 1000; // 140 BPM Trap 16th notes
+        this.bgmTimer = setInterval(() => this.playTrapStep(), stepInterval);
+      }
+
+      stopBGM() {
+        if (this.bgmTimer) {
+          clearInterval(this.bgmTimer);
+          this.bgmTimer = null;
+        }
+        if (this.customBgmAudio) {
+          this.customBgmAudio.pause();
+          this.customBgmAudio.currentTime = 0;
+        }
+        this.bgmMode = null;
+      }
+
+      playTrapStep() {
+        if (!this.enabled || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const s = this.step % 32;
+
+        // Punchy 808 Kick: 0, 8, 14, 18, 26
+        if (s === 0 || s === 8 || s === 14 || s === 18 || s === 26) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(160, now);
+          osc.frequency.exponentialRampToValueAtTime(32, now + 0.18);
+          gain.gain.setValueAtTime(0.7, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.23);
+        }
+
+        // Savage Distorted 808 Sub-Bass Slide
+        if (s === 0 || s === 16) {
+          const bOsc = this.ctx.createOscillator();
+          const bGain = this.ctx.createGain();
+          bOsc.type = 'sawtooth';
+          const root = (s === 0) ? 55 : 49;
+          bOsc.frequency.setValueAtTime(root, now);
+          bOsc.frequency.exponentialRampToValueAtTime(root * 1.5, now + 0.25);
+          bOsc.frequency.exponentialRampToValueAtTime(root, now + 0.45);
+
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.value = 350;
+
+          bGain.gain.setValueAtTime(0.55, now);
+          bGain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+
+          bOsc.connect(filter);
+          filter.connect(bGain);
+          bGain.connect(this.ctx.destination);
+          bOsc.start(now);
+          bOsc.stop(now + 0.52);
+        }
+
+        // Sharp Trap Snare / Hard Clap on beat 4, 12, 20, 28
+        if (s === 4 || s === 12 || s === 20 || s === 28) {
+          const bufferSize = this.ctx.sampleRate * 0.12;
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = buffer;
+
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'highpass';
+          filter.frequency.value = 1200;
+
+          const noiseGain = this.ctx.createGain();
+          noiseGain.gain.setValueAtTime(0.4, now);
+          noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+
+          noise.connect(filter);
+          filter.connect(noiseGain);
+          noiseGain.connect(this.ctx.destination);
+          noise.start(now);
+        }
+
+        // Rapid Triplet Trap Hi-Hats
+        if (s % 2 === 0 || (s >= 12 && s <= 15) || (s >= 28 && s <= 31)) {
+          const bufferSize = this.ctx.sampleRate * 0.025;
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+          const hat = this.ctx.createBufferSource();
+          hat.buffer = buffer;
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'highpass';
+          filter.frequency.value = 7500;
+          const hatGain = this.ctx.createGain();
+          hatGain.gain.setValueAtTime(0.12, now);
+          hatGain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+          hat.connect(filter);
+          filter.connect(hatGain);
+          hatGain.connect(this.ctx.destination);
+          hat.start(now);
+        }
+
+        // Siren / Tension Lead on key beats
+        if (s === 0 || s === 14 || s === 18) {
+          const sOsc = this.ctx.createOscillator();
+          const sGain = this.ctx.createGain();
+          sOsc.type = 'sawtooth';
+          sOsc.frequency.setValueAtTime(880, now);
+          sOsc.frequency.linearRampToValueAtTime(940, now + 0.12);
+          sGain.gain.setValueAtTime(0.07, now);
+          sGain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+          sOsc.connect(sGain);
+          sGain.connect(this.ctx.destination);
+          sOsc.start(now);
+          sOsc.stop(now + 0.15);
+        }
+
+        this.step++;
+      }
+
+      playVoiceQuote(index) {
+        const quoteTexts = [
+          "去你媽的！",
+          "踢爆你的骨灰罈！",
+          "到底是在靠杯三小啊！"
+        ];
+        const clipDataUrl = this.voiceClips[index];
+
+        if (clipDataUrl) {
+          const snd = new Audio(clipDataUrl);
+          snd.play().catch(e => console.warn(e));
+        } else {
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(quoteTexts[index]);
+            utter.lang = 'zh-TW';
+            utter.rate = 1.45;
+            utter.pitch = 1.3;
+            window.speechSynthesis.speak(utter);
+          }
+        }
+      }
+
+      testVoice(index) {
+        this.init();
+        this.playVoiceQuote(index);
+      }
+
+      playPraiseChime() {
+        if (!this.enabled || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.08);
+        osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.16);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.36);
+      }
+
+      playBanSound() {
+        if (!this.enabled || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(380, now);
+        osc.frequency.exponentialRampToValueAtTime(55, now + 0.18);
+        gain.gain.setValueAtTime(0.45, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.23);
+
+        const sub = this.ctx.createOscillator();
+        const subGain = this.ctx.createGain();
+        sub.type = 'sine';
+        sub.frequency.setValueAtTime(140, now);
+        sub.frequency.exponentialRampToValueAtTime(28, now + 0.25);
+        subGain.gain.setValueAtTime(0.6, now);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        sub.connect(subGain);
+        subGain.connect(this.ctx.destination);
+        sub.start(now);
+        sub.stop(now + 0.26);
+      }
+
+      playTableSlam() {
+        if (!this.enabled || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(110, now);
+        osc.frequency.exponentialRampToValueAtTime(20, now + 0.36);
+        gain.gain.setValueAtTime(0.8, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.4);
+      }
+
+      playDamageBuzz() {
+        if (!this.enabled || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(190, now);
+        osc.frequency.setValueAtTime(130, now + 0.08);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.22);
+      }
+
+      playHeartbeat() {
+        if (!this.enabled || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(70, now);
+        osc.frequency.exponentialRampToValueAtTime(32, now + 0.1);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.13);
+      }
+
+      playGameOverCut() {
+        if (!this.enabled || !this.ctx) return;
+        this.stopBGM();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(460, now);
+        osc.frequency.exponentialRampToValueAtTime(15, now + 0.65);
+        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.72);
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    const PRAISE_POOL = [
+      { text: "主播今天好正！", badge: "死忠粉" },
+      { text: "哈耿聲音真甜～", badge: "VIP" },
+      { text: "茶爸斗內 $1000: 主播今天很美", badge: "乾爹 茶爸" },
+      { text: "魔神的右手斗內 $500: 氣質技術台讚", badge: "乾爹 右手" },
+      { text: "小火藥: 今天哈耿真的好溫柔", badge: "小火藥" },
+      { text: "倒立哥送出 10 份訂閱！", badge: "乾爹 倒立哥" },
+      { text: "世界最優雅實況主無誤", badge: "粉粉" },
+      { text: "氣質優雅，說話又好聽", badge: "熱心粉絲" },
+      { text: "今天妝容也太好看了吧", badge: "大心" }
+    ];
+
+    const TROLL_POOL = [
+      { text: "你好可憐", badge: "黑粉" },
+      { text: "你屎好臭", badge: "鬧台" },
+      { text: "醫院檢查幾個紅字啊?", badge: "嘴砲" },
+      { text: "釋放小火藥！🔥", badge: "釣魚" },
+      { text: "又在混時數了是不是？", badge: "酸民" },
+      { text: "技術台還是綜藝台？笑死", badge: "反串" },
+      { text: "主播不要再擺爛了！", badge: "暴躁怪" },
+      { text: "骨灰罈準備好了沒？", badge: "挑釁" },
+      { text: "這操作真的看吐了", badge: "黑粉" },
+      { text: "倒立洗頭了沒？快點！", badge: "起鬨" }
+    ];
+
+    const HAGENG_QUOTES = [
+      "去你媽的！",
+      "踢爆你的骨灰罈！",
+      "到底是在靠杯三小啊！"
+    ];
+
+    /* ==========================================================
+       GAME ENGINE CLASS
+       ========================================================== */
+    class Game {
+      constructor() {
+        this.isRunning = false;
+        this.tilt = 0;
+        this.score = 0;
+        this.combo = 0;
+        this.maxCombo = 0;
+        this.viewers = 12480;
+        this.heartsCount = 0;
+        this.bansCount = 0;
+        this.startTime = 0;
+        this.elapsedTime = 0;
+
+        this.danmakus = [];
+        this.lastSpawnTime = 0;
+        this.spawnInterval = 1200;
+        this.baseSpeed = 260;
+
+        this.lastHeartbeatTime = 0;
+        this.memeImages = { 0: null, 1: null, 2: null, 3: null };
+        this.coverPhoto = null;
+        this.leaderboard = [];
+
+        this.loadStorage();
+        this.initDOM();
+        this.initEvents();
+      }
+
+      loadStorage() {
+        try {
+          const memes = localStorage.getItem('hageng_meme_pack');
+          if (memes) this.memeImages = JSON.parse(memes);
+
+          const cover = localStorage.getItem('hageng_cover_photo');
+          if (cover) this.coverPhoto = cover;
+
+          const board = localStorage.getItem('hageng_leaderboard');
+          if (board) {
+            this.leaderboard = JSON.parse(board);
+          } else {
+            this.leaderboard = [
+              { name: "乾爹 茶爸", score: 38500, time: "01:45", combo: 52 },
+              { name: "倒立哥", score: 29200, time: "01:22", combo: 41 },
+              { name: "魔神的右手", score: 21600, time: "01:05", combo: 33 },
+              { name: "小火藥", score: 14800, time: "00:48", combo: 22 },
+              { name: "路過萌新", score: 7500, time: "00:28", combo: 12 }
+            ];
+          }
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+
+      saveStorage() {
+        try {
+          localStorage.setItem('hageng_meme_pack', JSON.stringify(this.memeImages));
+          if (this.coverPhoto) {
+            localStorage.setItem('hageng_cover_photo', this.coverPhoto);
+          } else {
+            localStorage.removeItem('hageng_cover_photo');
+          }
+          localStorage.setItem('hageng_leaderboard', JSON.stringify(this.leaderboard));
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+
+      initDOM() {
+        this.elTiltFill = document.getElementById('tilt-bar-fill');
+        this.elTiltText = document.getElementById('tilt-percent-text');
+        this.elTiltStatus = document.getElementById('tilt-status-text');
+        this.elScore = document.getElementById('stat-score');
+        this.elCombo = document.getElementById('stat-combo');
+        this.elViewers = document.getElementById('stat-viewers');
+        this.elDanmakuStage = document.getElementById('danmaku-stage');
+        this.elWebcam = document.getElementById('webcam-container');
+        this.elSpeechBubble = document.getElementById('speech-bubble');
+        this.elShaker = document.getElementById('viewport-shaker');
+        this.elDamageVignette = document.getElementById('damage-vignette');
+        this.elChat = document.getElementById('chat-messages');
+
+        this.elHitLeft = document.getElementById('hitbox-left');
+        this.elHitRight = document.getElementById('hitbox-right');
+        this.elIconLeft = document.getElementById('hit-icon-left');
+        this.elIconRight = document.getElementById('hit-icon-right');
+
+        this.svgAvatar = document.getElementById('procedural-avatar');
+        this.svgWater = document.getElementById('prop-water-bottle');
+        this.svgEyes0 = document.getElementById('eyes-stage-0');
+        this.svgEyes1 = document.getElementById('eyes-stage-1');
+        this.svgEyes2 = document.getElementById('eyes-stage-2');
+        this.svgMouth0 = document.getElementById('mouth-stage-0');
+        this.svgMouth1 = document.getElementById('mouth-stage-1');
+        this.svgMouth2 = document.getElementById('mouth-stage-2');
+        this.svgDisconnect = document.getElementById('stage-disconnect');
+
+        this.imgStages = [
+          document.getElementById('img-stage-0'),
+          document.getElementById('img-stage-1'),
+          document.getElementById('img-stage-2'),
+          document.getElementById('img-stage-3')
+        ];
+
+        this.coverImg = document.getElementById('cover-beauty-img');
+        this.coverSvg = document.getElementById('default-cover-svg');
+        if (this.coverPhoto) {
+          this.coverImg.src = this.coverPhoto;
+          this.coverImg.style.display = 'block';
+          this.coverSvg.style.display = 'none';
+        }
+
+        this.renderLeaderboard();
+        this.updateSettingsUI();
+      }
+
+      initEvents() {
+        // First click on document / start screen triggers sweet BGM
+        const tryStartSweet = () => {
+          if (!this.isRunning && sound.enabled && sound.bgmMode !== 'SWEET') {
+            sound.startSweetBGM();
+            document.getElementById('sweet-bgm-icon').textContent = '🎵 治癒音樂：播放中';
+          }
+        };
+        document.body.addEventListener('pointerdown', tryStartSweet, { once: true });
+
+        // Toggle Sweet BGM in Start Screen
+        document.getElementById('btn-sweet-bgm-toggle').addEventListener('click', (e) => {
+          e.stopPropagation();
+          sound.init();
+          if (sound.bgmMode === 'SWEET') {
+            sound.stopBGM();
+            document.getElementById('sweet-bgm-icon').textContent = '🔇 治癒音樂：已靜音';
+          } else {
+            sound.startSweetBGM();
+            document.getElementById('sweet-bgm-icon').textContent = '🎵 治癒音樂：播放中';
+          }
+        });
+
+        // Header Sound Toggle (In gameplay)
+        document.getElementById('btn-sound-toggle').addEventListener('click', () => {
+          sound.init();
+          sound.enabled = !sound.enabled;
+          document.getElementById('sound-icon').textContent = sound.enabled ? '🔊 狂暴 Trap' : '🔇 靜音';
+          if (!sound.enabled) {
+            sound.stopBGM();
+          } else if (this.isRunning) {
+            sound.startTrapBGM();
+          }
+        });
+
+        // Start Button: Dramatic Transition (Scratch stop -> Shatter bass drop -> Trap BGM)
+        document.getElementById('btn-start-game').addEventListener('click', () => {
+          sound.init();
+          sound.stopBGM(); // Stop sweet music
+          sound.playRecordScratch(); // Scratch!
+
+          const overlay = document.getElementById('start-overlay');
+          document.body.classList.add('shattering');
+          sound.playTableSlam(); // Boom!
+
+          setTimeout(() => {
+            document.body.classList.remove('shattering');
+            overlay.style.display = 'none';
+            this.start();
+          }, 450);
+        });
+
+        // Settings Modal Controls
+        const settingsModal = document.getElementById('settings-modal');
+        document.getElementById('btn-open-settings-menu').addEventListener('click', () => {
+          settingsModal.style.display = 'flex';
+        });
+        document.getElementById('btn-close-settings').addEventListener('click', () => {
+          settingsModal.style.display = 'none';
+          this.updateAvatarVisuals();
+        });
+
+        // Leaderboard from Start Menu
+        document.getElementById('btn-view-leaderboard-menu').addEventListener('click', () => {
+          document.getElementById('record-input-section').style.display = 'none';
+          document.getElementById('gameover-modal').style.display = 'flex';
+        });
+
+        // Restart Game Button
+        document.getElementById('btn-restart-game').addEventListener('click', () => {
+          document.getElementById('gameover-modal').style.display = 'none';
+          this.start();
+        });
+
+        // Action Buttons
+        const btnHeart = document.getElementById('btn-action-heart');
+        const btnBan = document.getElementById('btn-action-ban');
+
+        btnHeart.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          this.handleInput('HEART');
+        });
+
+        btnBan.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          this.handleInput('BAN');
+        });
+
+        window.addEventListener('keydown', (e) => {
+          if (!this.isRunning) return;
+          if (e.repeat) return;
+          const key = e.key.toUpperCase();
+          if (key === 'J' || key === 'Z' || key === 'ARROWLEFT') {
+            e.preventDefault();
+            this.handleInput('HEART');
+          } else if (key === 'K' || key === 'X' || key === 'ARROWRIGHT') {
+            e.preventDefault();
+            this.handleInput('BAN');
+          }
+        });
+
+        // Submit Score to Leaderboard
+        document.getElementById('btn-submit-score').addEventListener('click', () => {
+          const input = document.getElementById('input-player-name');
+          const name = input.value.trim() || "神秘實況水友";
+          const durSec = Math.floor(this.elapsedTime);
+          const mins = String(Math.floor(durSec / 60)).padStart(2, '0');
+          const secs = String(durSec % 60).padStart(2, '0');
+
+          const newEntry = {
+            name: name,
+            score: this.score,
+            time: `${mins}:${secs}`,
+            combo: this.maxCombo
+          };
+
+          this.leaderboard.push(newEntry);
+          this.leaderboard.sort((a, b) => b.score - a.score);
+          this.leaderboard = this.leaderboard.slice(0, 5);
+          this.saveStorage();
+          this.renderLeaderboard(newEntry);
+          document.getElementById('record-input-section').style.display = 'none';
+        });
+
+        document.getElementById('btn-clear-board').addEventListener('click', () => {
+          this.leaderboard = [];
+          this.saveStorage();
+          this.renderLeaderboard();
+        });
+
+        // Reset Settings
+        document.getElementById('btn-reset-all').addEventListener('click', () => {
+          this.memeImages = { 0: null, 1: null, 2: null, 3: null };
+          this.coverPhoto = null;
+          sound.voiceClips = [null, null, null];
+          sound.customBgmDataUrl = null;
+          if (sound.customBgmAudio) sound.customBgmAudio = null;
+          this.saveStorage();
+          sound.saveAudioConfig();
+          this.coverImg.style.display = 'none';
+          this.coverSvg.style.display = 'block';
+          this.updateSettingsUI();
+          this.updateAvatarVisuals();
+        });
+
+        // Cover Photo Upload
+        document.getElementById('input-cover-photo').addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            this.coverPhoto = ev.target.result;
+            this.coverImg.src = this.coverPhoto;
+            this.coverImg.style.display = 'block';
+            this.coverSvg.style.display = 'none';
+            this.saveStorage();
+          };
+          reader.readAsDataURL(file);
+        });
+
+        // Custom BGM Upload
+        document.getElementById('input-custom-bgm').addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            sound.customBgmDataUrl = ev.target.result;
+            sound.customBgmAudio = null;
+            sound.saveAudioConfig();
+            document.getElementById('lbl-bgm-status').textContent = `自訂音樂：${file.name.substring(0, 15)}...`;
+            if (this.isRunning) {
+              sound.stopBGM();
+              sound.startTrapBGM();
+            }
+          };
+          reader.readAsDataURL(file);
+        });
+
+        // Voice Clip Uploads
+        document.querySelectorAll('.input-voice-file').forEach(input => {
+          input.addEventListener('change', (e) => {
+            const idx = parseInt(e.target.getAttribute('data-voice'));
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              sound.voiceClips[idx] = ev.target.result;
+              sound.saveAudioConfig();
+              document.getElementById(`voice-status-${idx}`).textContent = `✅ 已上傳：${file.name.substring(0, 12)}...`;
+              document.getElementById(`voice-status-${idx}`).style.color = '#00f593';
+            };
+            reader.readAsDataURL(file);
+          });
+        });
+
+        // Meme Uploads
+        document.querySelectorAll('.input-meme-file').forEach(input => {
+          input.addEventListener('change', (e) => {
+            const stage = e.target.getAttribute('data-stage');
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              this.memeImages[stage] = ev.target.result;
+              this.saveStorage();
+              this.updateSettingsUI();
+              this.updateAvatarVisuals();
+            };
+            reader.readAsDataURL(file);
+          });
+        });
+      }
+
+      renderLeaderboard(highlightEntry = null) {
+        const tbody = document.getElementById('leaderboard-body');
+        tbody.innerHTML = '';
+        if (this.leaderboard.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" style="color:#777; padding:16px;">暫無排行紀錄，快去開台挑戰！</td></tr>`;
+          return;
+        }
+
+        this.leaderboard.forEach((item, index) => {
+          const tr = document.createElement('tr');
+          if (highlightEntry && item.name === highlightEntry.name && item.score === highlightEntry.score) {
+            tr.className = 'highlight';
+          }
+          const medals = ['🥇', '🥈', '🥉', '4th', '5th'];
+          tr.innerHTML = `
+            <td>${medals[index] || (index + 1)}</td>
+            <td><b>${item.name}</b></td>
+            <td style="color:var(--twitch-purple); font-weight:800;">${item.score.toLocaleString()}</td>
+            <td>${item.time}</td>
+            <td>${item.combo}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      updateSettingsUI() {
+        for (let i = 0; i <= 3; i++) {
+          const prev = document.getElementById(`preview-stage-${i}`);
+          if (this.memeImages[i]) {
+            prev.innerHTML = `<img src="${this.memeImages[i]}" alt="Stage ${i}"/>`;
+          } else {
+            prev.innerHTML = `<span style="font-size:12px; color:#888;">預設動漫風</span>`;
+          }
+        }
+        for (let v = 0; v < 3; v++) {
+          const status = document.getElementById(`voice-status-${v}`);
+          if (sound.voiceClips[v]) {
+            status.textContent = '✅ 已上傳哈耿原聲音檔';
+            status.style.color = '#00f593';
+          } else {
+            status.textContent = '預設語音合成';
+            status.style.color = '#888';
+          }
+        }
+        if (sound.customBgmDataUrl) {
+          document.getElementById('lbl-bgm-status').textContent = '已啟用自訂 BGM 音樂';
+        } else {
+          document.getElementById('lbl-bgm-status').textContent = '狂暴 Trap / 808 重低音 (內建合成)';
+        }
+      }
+
+      start() {
+        this.isRunning = true;
+        this.tilt = 0;
+        this.score = 0;
+        this.combo = 0;
+        this.maxCombo = 0;
+        this.viewers = 12480;
+        this.heartsCount = 0;
+        this.bansCount = 0;
+        this.startTime = Date.now();
+        this.elapsedTime = 0;
+        this.spawnInterval = 1200;
+        this.baseSpeed = 260;
+
+        this.danmakus.forEach(d => {
+          if (d.el && d.el.parentNode) d.el.parentNode.removeChild(d.el);
+        });
+        this.danmakus = [];
+
+        this.updateHUD();
+        this.updateAvatarVisuals();
+        sound.startTrapBGM();
+
+        this.lastTime = performance.now();
+        requestAnimationFrame((t) => this.gameLoop(t));
+      }
+
+      gameOver() {
+        this.isRunning = false;
+        sound.playGameOverCut();
+
+        this.tilt = 100;
+        this.updateHUD();
+        this.updateAvatarVisuals();
+
+        const durSec = Math.floor((Date.now() - this.startTime) / 1000);
+        const mins = String(Math.floor(durSec / 60)).padStart(2, '0');
+        const secs = String(durSec % 60).padStart(2, '0');
+
+        document.getElementById('summary-time').textContent = `${mins}:${secs}`;
+        document.getElementById('summary-hearts').textContent = `${this.heartsCount} 次`;
+        document.getElementById('summary-bans').textContent = `${this.bansCount} 次`;
+        document.getElementById('summary-combo').textContent = String(this.maxCombo);
+        document.getElementById('summary-score').textContent = this.score.toLocaleString();
+
+        let title = "職業拔線公務員";
+        if (this.score > 30000) title = "抗破防神級宗師";
+        else if (this.score > 18000) title = "倒立冷靜型實況主";
+        else if (this.score > 9000) title = "容易破防的甜心主播";
+        else title = "極度玻璃心主播";
+
+        document.getElementById('summary-title').textContent = title;
+
+        document.getElementById('record-input-section').style.display = 'flex';
+        document.getElementById('input-player-name').value = '';
+        this.renderLeaderboard();
+
+        setTimeout(() => {
+          document.getElementById('gameover-modal').style.display = 'flex';
+        }, 600);
+      }
+
+      gameLoop(currentTime) {
+        if (!this.isRunning) return;
+
+        const dt = (currentTime - this.lastTime) / 1000;
+        this.lastTime = currentTime;
+        this.elapsedTime = (Date.now() - this.startTime) / 1000;
+
+        // Speed increases continuously up to 680px/s
+        this.baseSpeed = Math.min(680, 260 + this.elapsedTime * 6.5);
+        // Interval drops down to 380ms
+        this.spawnInterval = Math.max(380, 1200 - this.elapsedTime * 18);
+
+        if (currentTime - this.lastSpawnTime > this.spawnInterval) {
+          this.spawnDanmaku();
+
+          if (this.elapsedTime > 25 && Math.random() < 0.35) {
+            setTimeout(() => this.spawnDanmaku(true), 150);
+          }
+          this.lastSpawnTime = currentTime;
+        }
+
+        this.updateDanmakus(dt);
+
+        if (this.tilt >= 70 && currentTime - this.lastHeartbeatTime > (this.tilt >= 90 ? 400 : 750)) {
+          sound.playHeartbeat();
+          this.lastHeartbeatTime = currentTime;
+        }
+
+        requestAnimationFrame((t) => this.gameLoop(t));
+      }
+
+      spawnDanmaku(forceOpposite = false) {
+        const isTroll = Math.random() < 0.58;
+        let side = Math.random() < 0.5 ? 'LEFT' : 'RIGHT';
+        if (forceOpposite && this.danmakus.length > 0) {
+          side = (this.danmakus[this.danmakus.length - 1].side === 'LEFT') ? 'RIGHT' : 'LEFT';
+        }
+
+        const itemData = isTroll 
+          ? TROLL_POOL[Math.floor(Math.random() * TROLL_POOL.length)]
+          : PRAISE_POOL[Math.floor(Math.random() * PRAISE_POOL.length)];
+
+        const stageRect = this.elDanmakuStage.getBoundingClientRect();
+        const webcamRect = this.elWebcam.getBoundingClientRect();
+
+        const minY = webcamRect.top - stageRect.top + 25;
+        const maxY = webcamRect.bottom - stageRect.top - 25;
+        const trackY = minY + Math.random() * (maxY - minY);
+
+        const targetX = side === 'LEFT'
+          ? (webcamRect.left - stageRect.left)
+          : (webcamRect.right - stageRect.left);
+
+        const el = document.createElement('div');
+        el.className = `danmaku-item type-${isTroll ? 'troll' : 'praise'}`;
+        el.innerHTML = `
+          <span class="badge">${itemData.badge}</span>
+          <span>${itemData.text}</span>
+        `;
+        this.elDanmakuStage.appendChild(el);
+
+        const dWidth = el.offsetWidth || 170;
+        const startX = side === 'LEFT' ? -dWidth : stageRect.width + 10;
+
+        const danmaku = {
+          el,
+          isTroll,
+          side,
+          text: itemData.text,
+          x: startX,
+          y: trackY,
+          targetX,
+          width: dWidth,
+          speed: this.baseSpeed * (0.92 + Math.random() * 0.22),
+          handled: false
+        };
+
+        el.style.top = `${trackY}px`;
+        el.style.left = `${startX}px`;
+
+        this.danmakus.push(danmaku);
+      }
+
+      updateDanmakus(dt) {
+        const stageRect = this.elDanmakuStage.getBoundingClientRect();
+        const webcamRect = this.elWebcam.getBoundingClientRect();
+
+        for (let i = this.danmakus.length - 1; i >= 0; i--) {
+          const d = this.danmakus[i];
+
+          if (d.side === 'LEFT') {
+            d.x += d.speed * dt;
+          } else {
+            d.x -= d.speed * dt;
+          }
+          d.el.style.left = `${d.x}px`;
+
+          // Pass line: once completely past the target into webcam frame
+          const targetCenter = d.side === 'LEFT' 
+            ? (webcamRect.left - stageRect.left)
+            : (webcamRect.right - stageRect.left);
+
+          const passed = d.side === 'LEFT'
+            ? (d.x > targetCenter + 45) // fully penetrated past left border
+            : (d.x + d.width < targetCenter - 45); // fully penetrated past right border
+
+          if (passed && !d.handled) {
+            d.handled = true;
+            this.handleMiss(d);
+            this.removeDanmaku(i);
+          }
+        }
+      }
+
+      removeDanmaku(index) {
+        const d = this.danmakus[index];
+        if (d && d.el && d.el.parentNode) {
+          d.el.parentNode.removeChild(d.el);
+        }
+        this.danmakus.splice(index, 1);
+      }
+
+      /* 
+         REVERTED TO COMFORTABLE TEXT-BOX OVERLAP HIT DETECTION:
+         The hitting area now spans the whole text box width!
+      */
+      handleInput(action) {
+        if (!this.isRunning) return;
+
+        const stageRect = this.elDanmakuStage.getBoundingClientRect();
+        const webcamRect = this.elWebcam.getBoundingClientRect();
+
+        let bestCandidate = null;
+        let bestDist = 9999;
+        let bestIndex = -1;
+
+        for (let i = 0; i < this.danmakus.length; i++) {
+          const d = this.danmakus[i];
+          if (d.handled) continue;
+
+          const targetX = d.side === 'LEFT' 
+            ? (webcamRect.left - stageRect.left)
+            : (webcamRect.right - stageRect.left);
+
+          // Overlap check: text box intersects target zone with comfortable margin
+          const dStart = d.x;
+          const dEnd = d.x + d.width;
+          const dCenter = (dStart + dEnd) / 2;
+          const distToCenter = Math.abs(dCenter - targetX);
+
+          // Full text-box length hit window:
+          const isOverlapping = (dEnd >= targetX - 45) && (dStart <= targetX + 45);
+
+          if (isOverlapping && distToCenter < bestDist) {
+            bestDist = distToCenter;
+            bestCandidate = d;
+            bestIndex = i;
+          }
+        }
+
+        // Dynamic feedback side determination (Plan A)
+        const hitSide = bestCandidate ? bestCandidate.side : (this.danmakus.length > 0 ? this.danmakus[0].side : 'LEFT');
+        const targetBox = (hitSide === 'LEFT') ? this.elHitLeft : this.elHitRight;
+        const targetIcon = (hitSide === 'LEFT') ? this.elIconLeft : this.elIconRight;
+
+        // Animate dynamic icon and glow on that side
+        if (action === 'HEART') {
+          targetIcon.textContent = '❤️';
+          targetBox.classList.remove('pulse-ban');
+          targetBox.classList.add('pulse-heart');
+          setTimeout(() => {
+            targetBox.classList.remove('pulse-heart');
+            targetIcon.textContent = '🎯';
+          }, 140);
+        } else {
+          targetIcon.textContent = '🔨';
+          targetBox.classList.remove('pulse-heart');
+          targetBox.classList.add('pulse-ban');
+          setTimeout(() => {
+            targetBox.classList.remove('pulse-ban');
+            targetIcon.textContent = '🎯';
+          }, 140);
+        }
+
+        // If no overlapping danmaku: harmless empty click (no frustration!)
+        if (!bestCandidate) {
+          return;
+        }
+
+        // Inside Hit Window: Rating based on center alignment
+        const isPerfect = bestDist < 45;
+        const timingText = isPerfect ? "PERFECT!! 🔥" : "GOOD!";
+
+        bestCandidate.handled = true;
+        const rect = bestCandidate.el.getBoundingClientRect();
+        const posX = rect.left + rect.width / 2;
+        const posY = rect.top;
+
+        if (action === 'HEART') {
+          if (!bestCandidate.isTroll) {
+            sound.playPraiseChime();
+            this.heartsCount++;
+            this.combo++;
+            this.maxCombo = Math.max(this.maxCombo, this.combo);
+            const addScore = isPerfect ? 300 : 180;
+            this.score += addScore + this.combo * 25;
+            this.viewers += Math.floor(Math.random() * 60 + 35);
+            this.tilt = Math.max(0, this.tilt - 5);
+            this.showFeedback(posX, posY, `❤️ ${timingText} +${addScore}`, "#ff4b98");
+            this.addChatMessage("觀眾", "主播笑得太甜了吧 >///<");
+          } else {
+            sound.playDamageBuzz();
+            this.combo = 0;
+            this.tilt = Math.min(100, this.tilt + 15);
+            this.viewers = Math.max(100, this.viewers - 150);
+            this.triggerDamageEffect();
+            this.showFeedback(posX, posY, "💔 對酸民假笑！破防 +15%", "#ff3333");
+            this.triggerCatchphrase();
+          }
+        } else if (action === 'BAN') {
+          if (bestCandidate.isTroll) {
+            sound.playBanSound();
+            sound.playTableSlam();
+            this.bansCount++;
+            this.combo++;
+            this.maxCombo = Math.max(this.maxCombo, this.combo);
+            const addScore = isPerfect ? 350 : 220;
+            this.score += addScore + this.combo * 30;
+            this.viewers += Math.floor(Math.random() * 80 + 40);
+
+            this.triggerTableShake(180);
+            this.showFeedback(posX, posY, `🔨 ${timingText} BANNED! +${addScore}`, "#00f593");
+            this.addChatMessage("房管", "違規觀眾已永 BAN！");
+
+            if (this.tilt >= 70 && Math.random() < 0.65) {
+              this.triggerCatchphrase();
+            }
+          } else {
+            sound.playDamageBuzz();
+            this.combo = 0;
+            this.tilt = Math.min(100, this.tilt + 5);
+            this.viewers = Math.max(100, this.viewers - 300);
+            this.triggerDamageEffect();
+            this.showFeedback(posX, posY, "⚠️ 誤 BAN 乾爹！破防 +5%", "#ffb800");
+            this.addChatMessage("觀眾", "??? 房管誤殺乾爹！主播冷靜！");
+          }
+        }
+
+        this.removeDanmaku(bestIndex);
+        this.updateHUD();
+        this.updateAvatarVisuals();
+
+        if (this.tilt >= 100) {
+          this.gameOver();
+        }
+      }
+
+      handleMiss(d) {
+        const rect = d.el.getBoundingClientRect();
+        const posX = rect.left + rect.width / 2;
+        const posY = rect.top;
+
+        if (d.isTroll) {
+          sound.playDamageBuzz();
+          this.combo = 0;
+          this.tilt = Math.min(100, this.tilt + 20);
+          this.viewers = Math.max(100, this.viewers - 220);
+          this.triggerDamageEffect();
+          this.triggerTableShake(260);
+          this.showFeedback(posX, posY, "💥 漏看釣魚！破防 +20%", "#ff0000");
+          this.triggerCatchphrase();
+          this.addChatMessage("黑粉", `哈哈哈哈：${d.text}`);
+        } else {
+          this.combo = 0;
+          this.showFeedback(posX, posY, "💨 漏掉愛心 (MISS)", "#888");
+        }
+
+        this.updateHUD();
+        this.updateAvatarVisuals();
+
+        if (this.tilt >= 100) {
+          this.gameOver();
+        }
+      }
+
+      triggerDamageEffect() {
+        this.elDamageVignette.classList.add('hit');
+        setTimeout(() => this.elDamageVignette.classList.remove('hit'), 240);
+      }
+
+      triggerTableShake(duration = 200) {
+        this.elShaker.style.animation = `webcam-twitch 0.08s infinite alternate`;
+        setTimeout(() => {
+          if (this.tilt < 90) {
+            this.elShaker.style.animation = '';
+          }
+        }, duration);
+      }
+
+      triggerCatchphrase() {
+        const qIndex = Math.floor(Math.random() * HAGENG_QUOTES.length);
+        const quote = HAGENG_QUOTES[qIndex];
+        this.elSpeechBubble.textContent = quote;
+        this.elSpeechBubble.classList.add('active');
+
+        sound.playVoiceQuote(qIndex);
+
+        setTimeout(() => {
+          this.elSpeechBubble.classList.remove('active');
+        }, 1250);
+      }
+
+      showFeedback(x, y, text, color) {
+        const pop = document.createElement('div');
+        pop.className = 'feedback-popup';
+        pop.textContent = text;
+        pop.style.color = color;
+        pop.style.left = `${x}px`;
+        pop.style.top = `${y}px`;
+        document.body.appendChild(pop);
+        setTimeout(() => {
+          if (pop.parentNode) pop.parentNode.removeChild(pop);
+        }, 800);
+      }
+
+      addChatMessage(user, msg) {
+        const row = document.createElement('div');
+        row.className = 'chat-row';
+        const colors = ['#00f593', '#ff4b72', '#ffb800', '#4da6ff', '#bf94ff'];
+        const col = colors[Math.floor(Math.random() * colors.length)];
+        row.innerHTML = `<span class="chat-user" style="color:${col};">${user}:</span><span class="chat-text">${msg}</span>`;
+        this.elChat.appendChild(row);
+
+        while (this.elChat.children.length > 30) {
+          this.elChat.removeChild(this.elChat.firstChild);
+        }
+        this.elChat.scrollTop = this.elChat.scrollHeight;
+      }
+
+      updateHUD() {
+        this.elTiltFill.style.width = `${this.tilt}%`;
+        this.elTiltText.textContent = `${this.tilt}% 破防`;
+
+        let statusText = "主播心態：優雅冷靜";
+        if (this.tilt >= 90) statusText = "🔥 極度狂暴！即將拔線！";
+        else if (this.tilt >= 70) statusText = "⚡ 嘴角抽搐中，狂喝水壓驚！";
+        else if (this.tilt >= 40) statusText = "👀 逐漸煩躁，面露嫌棄";
+        this.elTiltStatus.textContent = statusText;
+
+        this.elScore.textContent = this.score.toLocaleString();
+        this.elCombo.textContent = String(this.combo);
+        this.elViewers.textContent = this.viewers.toLocaleString();
+      }
+
+      updateAvatarVisuals() {
+        let stage = 0;
+        if (this.tilt >= 100) stage = 3;
+        else if (this.tilt >= 90) stage = 2;
+        else if (this.tilt >= 70) stage = 1;
+        else stage = 0;
+
+        this.elWebcam.classList.remove('tilt-high', 'tilt-extreme');
+        if (stage === 1) this.elWebcam.classList.add('tilt-high');
+        if (stage >= 2) this.elWebcam.classList.add('tilt-extreme');
+
+        const customMemeSrc = this.memeImages[stage];
+
+        if (customMemeSrc) {
+          this.svgAvatar.style.display = 'none';
+          this.imgStages.forEach((img, idx) => {
+            if (idx === stage) {
+              img.src = customMemeSrc;
+              img.style.display = 'block';
+            } else {
+              img.style.display = 'none';
+            }
+          });
+        } else {
+          this.imgStages.forEach(img => img.style.display = 'none');
+          this.svgAvatar.style.display = 'block';
+
+          this.svgWater.style.display = 'none';
+          this.svgEyes0.style.display = 'none';
+          this.svgEyes1.style.display = 'none';
+          this.svgEyes2.style.display = 'none';
+          this.svgMouth0.style.display = 'none';
+          this.svgMouth1.style.display = 'none';
+          this.svgMouth2.style.display = 'none';
+          this.svgDisconnect.style.display = 'none';
+
+          if (stage === 0) {
+            this.svgEyes0.style.display = 'inline';
+            this.svgMouth0.style.display = 'inline';
+          } else if (stage === 1) {
+            this.svgEyes1.style.display = 'inline';
+            this.svgMouth1.style.display = 'inline';
+            this.svgWater.style.display = 'inline';
+          } else if (stage === 2) {
+            this.svgEyes2.style.display = 'inline';
+            this.svgMouth2.style.display = 'inline';
+          } else if (stage === 3) {
+            this.svgDisconnect.style.display = 'inline';
+          }
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      window.gameInstance = new Game();
+    });
+  </script>
+</body>
+</html>
