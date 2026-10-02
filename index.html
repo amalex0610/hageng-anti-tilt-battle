@@ -975,6 +975,398 @@
       .danmaku-item { font-size: 20px; padding: 8px 14px; }
       .danmaku-item .badge { font-size: 13px; }
     }
+
+    /* ==========================================================
+       IMAGE ADJUSTMENT & AUDIO MIX STYLING (NEW FEATURES)
+       ========================================================== */
+    .modal-dialog {
+      max-width: 720px !important;
+    }
+
+    /* Cover Photo Card */
+    .cover-config-card {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      background: var(--bg-surface);
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .cover-preview-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 140px;
+    }
+
+    .cover-preview-frame {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid #ffb7c5;
+      box-shadow: 0 0 15px rgba(255, 183, 197, 0.4);
+      overflow: hidden;
+      position: relative;
+      background: #2b1b36;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .cover-preview-frame img {
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    #preview-cover-placeholder {
+      font-size: 11px;
+      color: #ffaec0;
+      text-align: center;
+      padding: 6px;
+    }
+
+    /* Meme Upload Grid & Slots */
+    .meme-upload-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+      gap: 14px;
+    }
+
+    .meme-preview {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      height: auto !important;
+      min-height: 130px;
+      background: #0d0d12 !important;
+      border-radius: 8px;
+      border: 1px dashed #444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .meme-preview img {
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .drag-hint-badge {
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.72);
+      color: #fff;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      pointer-events: none;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    /* Image Adjust Controls */
+    .img-adjust-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #14141b;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #2e2e38;
+      margin-top: 6px;
+    }
+
+    .adjust-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .adjust-row-dual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .adjust-col {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 11px;
+    }
+
+    .adjust-label {
+      color: #bbb;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .adjust-label b {
+      color: #fff;
+      font-family: monospace;
+    }
+
+    .adjust-slider {
+      width: 100%;
+      height: 5px;
+      accent-color: var(--twitch-purple);
+      cursor: pointer;
+      background: #2b2b36;
+      border-radius: 3px;
+    }
+
+    .btn-group-toggle {
+      display: flex;
+      gap: 4px;
+    }
+
+    .btn-toggle {
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #24242e;
+      color: #aaa;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-toggle:hover {
+      background: #32323e;
+      color: #fff;
+    }
+
+    .btn-toggle.active {
+      background: var(--twitch-purple);
+      color: #fff;
+      border-color: var(--twitch-purple);
+      box-shadow: 0 0 8px rgba(145, 70, 255, 0.4);
+    }
+
+    /* Audio Balance & Ducking Section */
+    .audio-balance-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .vol-control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .vol-label-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 180px;
+    }
+
+    .vol-icon {
+      font-size: 20px;
+    }
+
+    .vol-slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .vol-slider {
+      flex: 1;
+      height: 6px;
+      accent-color: var(--twitch-purple);
+      cursor: pointer;
+      border-radius: 3px;
+      background: #2b2b36;
+    }
+
+    .vol-num-badge {
+      font-family: monospace;
+      font-weight: 800;
+      font-size: 13px;
+      color: #fff;
+      width: 44px;
+      text-align: right;
+    }
+
+    .ducking-status-banner {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #333;
+    }
+
+    .ducking-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(145, 70, 255, 0.15);
+      border: 1px solid rgba(145, 70, 255, 0.4);
+      color: #d1b3ff;
+      transition: all 0.2s ease;
+    }
+
+    .ducking-badge.active-ducking {
+      background: rgba(0, 245, 147, 0.25);
+      border-color: #00f593;
+      color: #00f593;
+      box-shadow: 0 0 12px rgba(0, 245, 147, 0.5);
+    }
+
+    .duck-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #9146ff;
+      display: inline-block;
+    }
+
+    .ducking-badge.active-ducking .duck-dot {
+      background: #00f593;
+      animation: pulse-duck 0.6s infinite alternate;
+    }
+
+    @keyframes pulse-duck {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      100% { transform: scale(1.3); opacity: 1; }
+    }
+
+    /* Quick Volume Popover in Header */
+    .quick-volume-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .quick-volume-popover {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 280px;
+      background: #181721;
+      border: 1px solid #3d3b4d;
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.88);
+      z-index: 600;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .quick-volume-popover.open {
+      display: flex;
+    }
+
+    .quick-popover-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #2b2b36;
+      padding-bottom: 8px;
+    }
+
+    .duck-indicator-mini {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: #888;
+      background: #24242e;
+      padding: 2px 7px;
+      border-radius: 12px;
+      border: 1px solid #333;
+    }
+
+    .duck-dot-mini {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #666;
+      display: inline-block;
+    }
+
+    .duck-indicator-mini.active-ducking {
+      color: #00f593;
+      border-color: #00f593;
+      background: rgba(0, 245, 147, 0.15);
+    }
+
+    .duck-indicator-mini.active-ducking .duck-dot-mini {
+      background: #00f593;
+      animation: pulse-duck 0.6s infinite alternate;
+    }
+
+    .quick-popover-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quick-slider-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .slider-tag {
+      font-size: 12px;
+      font-weight: 700;
+      width: 52px;
+      color: #ddd;
+    }
+
+    .quick-slider-item b {
+      font-family: monospace;
+      font-size: 12px;
+      width: 36px;
+      text-align: right;
+      color: #fff;
+    }
+
+    .quick-popover-footer {
+      display: flex;
+      gap: 8px;
+      border-top: 1px solid #2b2b36;
+      padding-top: 8px;
+    }
+
+    button.icon-btn.muted {
+      color: #ff5252;
+      border-color: #ff5252;
+    }
+
   </style>
 </head>
 <body>
@@ -985,8 +1377,46 @@
       <span class="stream-title" id="top-stream-title">【哈耿】今天絕對不破防！優雅氣質技術台 | !DC !周邊 !倒立</span>
     </div>
     <div class="header-actions">
-      <button class="icon-btn" id="btn-sound-toggle" title="切換音效">
+      <!-- Quick In-Game Volume Popover -->
+      <div class="quick-volume-wrapper" id="quick-volume-wrapper">
+        <button class="icon-btn" id="btn-quick-volume" title="即時音量調節與閃避狀態">
+          <span id="quick-volume-icon">🎛️ 音量</span>
+        </button>
+        <div class="quick-volume-popover" id="quick-volume-popover">
+          <div class="quick-popover-header">
+            <span style="font-weight:800; font-size:13px;">🎛️ 實況音量即時調節</span>
+            <div class="duck-indicator-mini" id="header-duck-indicator">
+              <span class="duck-dot-mini"></span>
+              <span id="header-duck-text">閃避待命</span>
+            </div>
+          </div>
+          <div class="quick-popover-body">
+            <div class="quick-slider-item">
+              <span class="slider-tag">🎵 BGM</span>
+              <input type="range" min="0" max="100" value="45" id="quick-bgm-slider" class="vol-slider">
+              <b id="quick-bgm-val">45%</b>
+            </div>
+            <div class="quick-slider-item">
+              <span class="slider-tag">🎙️ 語音</span>
+              <input type="range" min="0" max="100" value="100" id="quick-voice-slider" class="vol-slider">
+              <b id="quick-voice-val">100%</b>
+            </div>
+          </div>
+          <div class="quick-popover-footer">
+            <button class="icon-btn" id="btn-header-mute" style="flex:1; justify-content:center; font-size:12px;">
+              <span id="header-mute-icon">🔇 一鍵靜音</span>
+            </button>
+            <button class="icon-btn" id="btn-header-open-settings" style="flex:1; justify-content:center; font-size:12px;">⚙️ 後台設定</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="icon-btn" id="btn-sound-toggle" title="快速靜音/恢復">
         <span id="sound-icon">🔊 狂暴 Trap</span>
+      </button>
+
+      <button class="icon-btn" id="btn-header-settings" title="開啟實況主後台配置">
+        <span>⚙️ 後台</span>
       </button>
     </div>
   </header>
@@ -1258,19 +1688,100 @@
     <div class="modal-dialog">
       <div class="modal-title">⚙️ 實況主後台配置中心</div>
       <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">
-        所有上傳的美圖、音檔與表情包皆永久保存在您的本機瀏覽器中，隨時可開台！
+        所有上傳的美圖、縮放平移位置、音檔、音量與表情包皆永久保存在您的本機瀏覽器中，隨時可開台！
       </p>
 
-      <div class="settings-section-title">📷 首頁封面美照自訂</div>
-      <div class="audio-slot-row">
-        <span>替換「哈耿的精緻日常」封面照片</span>
-        <div class="file-input-wrapper" style="width:auto;">
-          <button class="icon-btn">上傳美照</button>
-          <input type="file" accept="image/*" id="input-cover-photo">
+      <!-- 1. COVER PHOTO SETTINGS WITH PLAN A ZOOM & POSITION -->
+      <div class="settings-section-title">📷 首頁封面美照自訂（縮放與畫面微調）</div>
+      <div class="cover-config-card">
+        <div class="cover-preview-wrapper">
+          <div class="cover-preview-frame" id="preview-cover-frame" title="按住可拖曳調整中心位置">
+            <img id="preview-cover-img" src="" alt="封面預覽" style="display:none;" />
+            <div id="preview-cover-placeholder">🌸 預設動漫美照</div>
+            <div class="drag-hint-badge">👆 拖曳平移</div>
+          </div>
+          <div class="file-input-wrapper" style="width:auto; margin-top:8px;">
+            <button class="icon-btn" style="width:100%; justify-content:center;">上傳/更換封面美照</button>
+            <input type="file" accept="image/*" id="input-cover-photo">
+          </div>
+        </div>
+
+        <div class="img-adjust-controls" style="flex:1; min-width:240px;">
+          <div class="adjust-row">
+            <span class="adjust-label">顯示模式：</span>
+            <div class="btn-group-toggle">
+              <button type="button" class="btn-toggle active" id="btn-cover-mode-cover" onclick="game.setCoverMode('cover')">填滿 (Cover)</button>
+              <button type="button" class="btn-toggle" id="btn-cover-mode-contain" onclick="game.setCoverMode('contain')">完整 (Contain)</button>
+            </div>
+          </div>
+          <div class="adjust-row">
+            <span class="adjust-label">🔍 縮放比例：<b id="lbl-cover-zoom">100%</b></span>
+            <input type="range" min="50" max="200" value="100" class="adjust-slider" id="slider-cover-zoom">
+          </div>
+          <div class="adjust-row-dual">
+            <div class="adjust-col">
+              <span class="adjust-label">↔️ 水平 (X)：<b id="lbl-cover-posx">50%</b></span>
+              <input type="range" min="0" max="100" value="50" class="adjust-slider" id="slider-cover-posx">
+            </div>
+            <div class="adjust-col">
+              <span class="adjust-label">↕️ 垂直 (Y)：<b id="lbl-cover-posy">50%</b></span>
+              <input type="range" min="0" max="100" value="50" class="adjust-slider" id="slider-cover-posy">
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+            <small style="color:var(--text-muted); font-size:11px;">💡 提示：可直接在圓圈內按住滑鼠拖曳調整中心焦點</small>
+            <button type="button" class="icon-btn" style="padding:3px 8px; font-size:11px;" onclick="game.resetCoverSettings()">↺ 重設</button>
+          </div>
         </div>
       </div>
 
-      <div class="settings-section-title">🎵 實況背景音樂 (BGM) 設定</div>
+      <!-- 2. AUDIO MIX & DUCKING SECTION (FEATURE 2) -->
+      <div class="settings-section-title">🔊 音量平衡與廣播閃避 (Audio Mix & Ducking)</div>
+      <div class="audio-balance-card">
+        <div class="vol-control-row">
+          <div class="vol-label-box">
+            <span class="vol-icon">🎵</span>
+            <div>
+              <div style="font-weight:700; font-size:13px;">實況背景音樂 (BGM) 音量</div>
+              <small style="color:var(--text-muted); font-size:11px;">內建 Trap / 治癒音樂 / 自訂上傳音樂</small>
+            </div>
+          </div>
+          <div class="vol-slider-wrap">
+            <input type="range" min="0" max="100" value="45" id="settings-bgm-volume" class="vol-slider">
+            <span class="vol-num-badge" id="settings-bgm-val">45%</span>
+          </div>
+        </div>
+
+        <div class="vol-control-row" style="margin-top:12px;">
+          <div class="vol-label-box">
+            <span class="vol-icon">🎙️</span>
+            <div>
+              <div style="font-weight:700; font-size:13px;">哈耿經典語音 (Voice) 音量</div>
+              <small style="color:var(--text-muted); font-size:11px;">主播霸氣台詞原聲 / 語音合成</small>
+            </div>
+          </div>
+          <div class="vol-slider-wrap">
+            <input type="range" min="0" max="100" value="100" id="settings-voice-volume" class="vol-slider">
+            <span class="vol-num-badge" id="settings-voice-val">100%</span>
+          </div>
+        </div>
+
+        <div class="ducking-status-banner">
+          <div class="ducking-badge" id="ducking-badge">
+            <span class="duck-dot"></span>
+            <span id="ducking-status-text">✨ 廣播級語音閃避 (Audio Ducking)：已待命</span>
+          </div>
+          <div style="font-size:12px; color:#aaa; line-height:1.4; margin-top:5px;">
+            當哈耿觸發台詞開口說話時，BGM 將自動壓低至 20%，避免背景音樂蓋過主播人聲；台詞播畢後平滑漸強恢復！
+          </div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button type="button" class="icon-btn" style="font-size:12px;" onclick="sound.testDuckingEffect()">🎧 測試語音閃避效果</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. BGM SOURCE CONFIG -->
+      <div class="settings-section-title">🎵 實況背景音樂 (BGM) 來源設定</div>
       <div class="audio-slot-row">
         <span>當前遊戲 BGM：<b id="lbl-bgm-status">狂暴 Trap / 808 重低音 (內建合成)</b></span>
         <div class="file-input-wrapper" style="width:auto;">
@@ -1279,6 +1790,7 @@
         </div>
       </div>
 
+      <!-- 4. VOICE CLIPS CONFIG -->
       <div class="settings-section-title">🎙️ 哈耿經典語音配置（原聲上傳）</div>
       
       <div class="audio-slot-row">
@@ -1323,41 +1835,166 @@
         </div>
       </div>
 
-      <div class="settings-section-title">🖼️ 哈耿情緒表情包 (4 階段)</div>
+      <!-- 5. 4-STAGE MEME PACK WITH PLAN A ZOOM & POSITION -->
+      <div class="settings-section-title">🖼️ 哈耿情緒表情包 (4 階段獨立縮放與畫面平移)</div>
       <div class="meme-upload-grid">
-        <div class="meme-slot">
-          <span style="font-size:13px; font-weight:700;">1. 優雅營業 (0-69%)</span>
-          <div class="meme-preview" id="preview-stage-0"><span style="font-size:12px; color:#888;">預設動漫風</span></div>
+        <!-- Stage 0 -->
+        <div class="meme-slot" data-stage="0">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:13px; font-weight:700;">1. 優雅營業 (0-69%)</span>
+            <button type="button" class="icon-btn" style="padding:2px 6px; font-size:11px;" onclick="game.resetMemeSettings(0)">↺ 重設</button>
+          </div>
+          <div class="meme-preview" id="preview-stage-0" title="按住可拖曳調整中心位置">
+            <img id="preview-stage-img-0" src="" alt="Stage 0" style="display:none;" />
+            <span class="preview-stage-placeholder" id="placeholder-stage-0" style="font-size:12px; color:#888;">預設動漫風</span>
+            <div class="drag-hint-badge">👆 拖曳平移</div>
+          </div>
           <div class="file-input-wrapper">
             <span class="btn-upload">上傳照片</span>
             <input type="file" accept="image/*" data-stage="0" class="input-meme-file">
           </div>
+          <div class="img-adjust-controls">
+            <div class="adjust-row">
+              <span class="adjust-label">模式：</span>
+              <div class="btn-group-toggle">
+                <button type="button" class="btn-toggle active" id="btn-meme-mode-cover-0" onclick="game.setMemeMode(0, 'cover')">填滿</button>
+                <button type="button" class="btn-toggle" id="btn-meme-mode-contain-0" onclick="game.setMemeMode(0, 'contain')">完整</button>
+              </div>
+            </div>
+            <div class="adjust-row">
+              <span class="adjust-label">🔍 縮放：<b id="lbl-meme-zoom-0">100%</b></span>
+              <input type="range" min="50" max="200" value="100" class="adjust-slider" id="slider-meme-zoom-0">
+            </div>
+            <div class="adjust-row-dual">
+              <div class="adjust-col">
+                <span class="adjust-label">↔️ X：<b id="lbl-meme-posx-0">50%</b></span>
+                <input type="range" min="0" max="100" value="50" class="adjust-slider" id="slider-meme-posx-0">
+              </div>
+              <div class="adjust-col">
+                <span class="adjust-label">↕️ Y：<b id="lbl-meme-posy-0">50%</b></span>
+                <input type="range" min="0" max="100" value="50" class="adjust-slider" id="slider-meme-posy-0">
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="meme-slot">
-          <span style="font-size:13px; font-weight:700;">2. 抽搐喝水 (70-89%)</span>
-          <div class="meme-preview" id="preview-stage-1"><span style="font-size:12px; color:#888;">預設動漫風</span></div>
+        <!-- Stage 1 -->
+        <div class="meme-slot" data-stage="1">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:13px; font-weight:700;">2. 抽搐喝水 (70-89%)</span>
+            <button type="button" class="icon-btn" style="padding:2px 6px; font-size:11px;" onclick="game.resetMemeSettings(1)">↺ 重設</button>
+          </div>
+          <div class="meme-preview" id="preview-stage-1" title="按住可拖曳調整中心位置">
+            <img id="preview-stage-img-1" src="" alt="Stage 1" style="display:none;" />
+            <span class="preview-stage-placeholder" id="placeholder-stage-1" style="font-size:12px; color:#888;">預設動漫風</span>
+            <div class="drag-hint-badge">👆 拖曳平移</div>
+          </div>
           <div class="file-input-wrapper">
             <span class="btn-upload">上傳照片</span>
             <input type="file" accept="image/*" data-stage="1" class="input-meme-file">
           </div>
+          <div class="img-adjust-controls">
+            <div class="adjust-row">
+              <span class="adjust-label">模式：</span>
+              <div class="btn-group-toggle">
+                <button type="button" class="btn-toggle active" id="btn-meme-mode-cover-1" onclick="game.setMemeMode(1, 'cover')">填滿</button>
+                <button type="button" class="btn-toggle" id="btn-meme-mode-contain-1" onclick="game.setMemeMode(1, 'contain')">完整</button>
+              </div>
+            </div>
+            <div class="adjust-row">
+              <span class="adjust-label">🔍 縮放：<b id="lbl-meme-zoom-1">100%</b></span>
+              <input type="range" min="50" max="200" value="100" class="adjust-slider" id="slider-meme-zoom-1">
+            </div>
+            <div class="adjust-row-dual">
+              <div class="adjust-col">
+                <span class="adjust-label">↔️ X：<b id="lbl-meme-posx-1">50%</b></span>
+                <input type="range" min="0" max="100" value="50" class="adjust-slider" id="slider-meme-posx-1">
+              </div>
+              <div class="adjust-col">
+                <span class="adjust-label">↕️ Y：<b id="lbl-meme-posy-1">50%</b></span>
+                <input type="range" min="0" max="100" value="50" class="adjust-slider" id="slider-meme-posy-1">
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="meme-slot">
-          <span style="font-size:13px; font-weight:700;">3. 暴怒桌咚 (90-99%)</span>
-          <div class="meme-preview" id="preview-stage-2"><span style="font-size:12px; color:#888;">預設動漫風</span></div>
+        <!-- Stage 2 -->
+        <div class="meme-slot" data-stage="2">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:13px; font-weight:700;">3. 暴怒桌咚 (90-99%)</span>
+            <button type="button" class="icon-btn" style="padding:2px 6px; font-size:11px;" onclick="game.resetMemeSettings(2)">↺ 重設</button>
+          </div>
+          <div class="meme-preview" id="preview-stage-2" title="按住可拖曳調整中心位置">
+            <img id="preview-stage-img-2" src="" alt="Stage 2" style="display:none;" />
+            <span class="preview-stage-placeholder" id="placeholder-stage-2" style="font-size:12px; color:#888;">預設動漫風</span>
+            <div class="drag-hint-badge">👆 拖曳平移</div>
+          </div>
           <div class="file-input-wrapper">
             <span class="btn-upload">上傳照片</span>
             <input type="file" accept="image/*" data-stage="2" class="input-meme-file">
           </div>
+          <div class="img-adjust-controls">
+            <div class="adjust-row">
+              <span class="adjust-label">模式：</span>
+              <div class="btn-group-toggle">
+                <button type="button" class="btn-toggle active" id="btn-meme-mode-cover-2" onclick="game.setMemeMode(2, 'cover')">填滿</button>
+                <button type="button" class="btn-toggle" id="btn-meme-mode-contain-2" onclick="game.setMemeMode(2, 'contain')">完整</button>
+              </div>
+            </div>
+            <div class="adjust-row">
+              <span class="adjust-label">🔍 縮放：<b id="lbl-meme-zoom-2">100%</b></span>
+              <input type="range" min="50" max="200" value="100" class="adjust-slider" id="slider-meme-zoom-2">
+            </div>
+            <div class="adjust-row-dual">
+              <div class="adjust-col">
+                <span class="adjust-label">↔️ X：<b id="lbl-meme-posx-2">50%</b></span>
+                <input type="range" min="0" max="100" value="50" class="adjust-slider" id="slider-meme-posx-2">
+              </div>
+              <div class="adjust-col">
+                <span class="adjust-label">↕️ Y：<b id="lbl-meme-posy-2">50%</b></span>
+                <input type="range" min="0" max="100" value="50" class="adjust-slider" id="slider-meme-posy-2">
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="meme-slot">
-          <span style="font-size:13px; font-weight:700;">4. 拔線關台 (100% 倒台)</span>
-          <div class="meme-preview" id="preview-stage-3"><span style="font-size:12px; color:#888;">預設動漫風</span></div>
+        <!-- Stage 3 -->
+        <div class="meme-slot" data-stage="3">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:13px; font-weight:700;">4. 拔線關台 (100% 倒台)</span>
+            <button type="button" class="icon-btn" style="padding:2px 6px; font-size:11px;" onclick="game.resetMemeSettings(3)">↺ 重設</button>
+          </div>
+          <div class="meme-preview" id="preview-stage-3" title="按住可拖曳調整中心位置">
+            <img id="preview-stage-img-3" src="" alt="Stage 3" style="display:none;" />
+            <span class="preview-stage-placeholder" id="placeholder-stage-3" style="font-size:12px; color:#888;">預設動漫風</span>
+            <div class="drag-hint-badge">👆 拖曳平移</div>
+          </div>
           <div class="file-input-wrapper">
             <span class="btn-upload">上傳照片</span>
             <input type="file" accept="image/*" data-stage="3" class="input-meme-file">
+          </div>
+          <div class="img-adjust-controls">
+            <div class="adjust-row">
+              <span class="adjust-label">模式：</span>
+              <div class="btn-group-toggle">
+                <button type="button" class="btn-toggle active" id="btn-meme-mode-cover-3" onclick="game.setMemeMode(3, 'cover')">填滿</button>
+                <button type="button" class="btn-toggle" id="btn-meme-mode-contain-3" onclick="game.setMemeMode(3, 'contain')">完整</button>
+              </div>
+            </div>
+            <div class="adjust-row">
+              <span class="adjust-label">🔍 縮放：<b id="lbl-meme-zoom-3">100%</b></span>
+              <input type="range" min="50" max="200" value="100" class="adjust-slider" id="slider-meme-zoom-3">
+            </div>
+            <div class="adjust-row-dual">
+              <div class="adjust-col">
+                <span class="adjust-label">↔️ X：<b id="lbl-meme-posx-3">50%</b></span>
+                <input type="range" min="0" max="100" value="50" class="adjust-slider" id="slider-meme-posx-3">
+              </div>
+              <div class="adjust-col">
+                <span class="adjust-label">↕️ Y：<b id="lbl-meme-posy-3">50%</b></span>
+                <input type="range" min="0" max="100" value="50" class="adjust-slider" id="slider-meme-posy-3">
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1409,6 +2046,7 @@
 
       <div style="display:flex; gap:10px; margin-top:16px;">
         <button class="icon-btn" id="btn-clear-board" style="padding:10px;">清除榜單</button>
+        <button class="icon-btn" id="btn-close-gameover" style="padding:10px; display:none;">返回首頁</button>
         <button class="btn-primary" id="btn-restart-game" style="flex:1;">重新開台（再戰黑粉）</button>
       </div>
     </div>
@@ -1420,13 +2058,21 @@
       constructor() {
         this.ctx = null;
         this.enabled = true;
-        this.bgmMode = null; // 'SWEET' or 'TRAP'
+        this.bgmMode = null; // 'SWEET' or 'TRAP' or 'CUSTOM'
         this.bgmTimer = null;
         this.customBgmAudio = null;
         this.customBgmDataUrl = null;
         this.voiceClips = [null, null, null];
         this.step = 0;
         this.sweetStep = 0;
+        this.gameOverStep = 0;
+        this.bgmMasterGain = null;
+        this.bgmVolume = 0.45; // Default 45% to prevent drowning out voice
+        this.voiceVolume = 1.0; // Default 100%
+        this.isMuted = false;
+        this.isDucking = false;
+        this.duckingTimeout = null;
+        this.onDuckingChange = null;
         this.loadAudioConfig();
       }
 
@@ -1436,6 +2082,15 @@
           if (bgm) this.customBgmDataUrl = bgm;
           const voices = localStorage.getItem('hageng_voice_clips');
           if (voices) this.voiceClips = JSON.parse(voices);
+
+          const savedBgm = localStorage.getItem('hageng_bgm_volume');
+          if (savedBgm !== null) this.bgmVolume = Math.max(0, Math.min(1, parseFloat(savedBgm)));
+
+          const savedVoice = localStorage.getItem('hageng_voice_volume');
+          if (savedVoice !== null) this.voiceVolume = Math.max(0, Math.min(1, parseFloat(savedVoice)));
+
+          const savedMute = localStorage.getItem('hageng_muted');
+          if (savedMute !== null) this.isMuted = savedMute === '1';
         } catch (e) {
           console.warn(e);
         }
@@ -1449,6 +2104,9 @@
             localStorage.removeItem('hageng_custom_bgm');
           }
           localStorage.setItem('hageng_voice_clips', JSON.stringify(this.voiceClips));
+          localStorage.setItem('hageng_bgm_volume', this.bgmVolume);
+          localStorage.setItem('hageng_voice_volume', this.voiceVolume);
+          localStorage.setItem('hageng_muted', this.isMuted ? '1' : '0');
         } catch (e) {
           console.warn(e);
         }
@@ -1461,14 +2119,253 @@
             this.ctx = new AudioContext();
           }
         }
-        if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume();
+        if (this.ctx) {
+          if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+          }
+          if (!this.bgmMasterGain) {
+            this.bgmMasterGain = this.ctx.createGain();
+            const currentVol = (this.isMuted || !this.enabled) ? 0 : (this.isDucking ? this.bgmVolume * 0.2 : this.bgmVolume);
+            this.bgmMasterGain.gain.setValueAtTime(currentVol, this.ctx.currentTime);
+            this.bgmMasterGain.connect(this.ctx.destination);
+          }
         }
+      }
+
+      applyBgmGain(rampTime = 0.05) {
+        const targetVol = (this.isMuted || !this.enabled) ? 0 : (this.isDucking ? this.bgmVolume * 0.2 : this.bgmVolume);
+        if (this.ctx && this.bgmMasterGain) {
+          this.bgmMasterGain.gain.cancelScheduledValues(this.ctx.currentTime);
+          this.bgmMasterGain.gain.setTargetAtTime(targetVol, this.ctx.currentTime, rampTime);
+        }
+        if (this.customBgmAudio) {
+          this.customBgmAudio.volume = targetVol;
+        }
+      }
+
+      setBgmVolume(val) {
+        this.bgmVolume = Math.max(0, Math.min(1, parseFloat(val)));
+        this.saveAudioConfig();
+        this.applyBgmGain(0.05);
+      }
+
+      setVoiceVolume(val) {
+        this.voiceVolume = Math.max(0, Math.min(1, parseFloat(val)));
+        this.saveAudioConfig();
+      }
+
+      toggleMute() {
+        this.isMuted = !this.isMuted;
+        this.saveAudioConfig();
+        this.applyBgmGain(0.02);
+        return this.isMuted;
+      }
+
+      /* 0. BROADCAST AUDIO DUCKING (Feature 2) */
+      startDucking() {
+        if (!this.enabled || this.isMuted) return;
+        this.isDucking = true;
+        if (this.duckingTimeout) {
+          clearTimeout(this.duckingTimeout);
+          this.duckingTimeout = null;
+        }
+        this.applyBgmGain(0.04);
+        if (typeof this.onDuckingChange === 'function') {
+          this.onDuckingChange(true);
+        }
+        // Safety timeout (4s) in case speech utterance or audio fails to fire onend
+        this.duckingTimeout = setTimeout(() => {
+          this.endDucking();
+        }, 4000);
+      }
+
+      endDucking() {
+        if (!this.isDucking) return;
+        this.isDucking = false;
+        if (this.duckingTimeout) {
+          clearTimeout(this.duckingTimeout);
+          this.duckingTimeout = null;
+        }
+        this.applyBgmGain(0.18); // Smooth swell back up
+        if (typeof this.onDuckingChange === 'function') {
+          this.onDuckingChange(false);
+        }
+      }
+
+      testDuckingEffect() {
+        this.init();
+        const wasStopped = (!this.bgmTimer && !this.customBgmAudio);
+        if (wasStopped) {
+          this.startTrapBGM();
+        }
+        setTimeout(() => {
+          this.playVoiceQuote(Math.floor(Math.random() * 3));
+        }, 350);
+      }
+
+      /* 4. COMICAL CARTOON FAIL BGM (Option A: Tuba Bounce & Cheeky Cartoon Staccato) */
+      startGameOverBGM() {
+        if (!this.enabled || this.isMuted) return;
+        this.init();
+        if (this.bgmMode === 'GAMEOVER' && this.bgmTimer) return;
+        this.stopBGM();
+
+        this.bgmMode = 'GAMEOVER';
+        this.gameOverStep = 0;
+        // ~132 BPM, 8th notes (each step is ~227ms)
+        const stepInterval = (60 / 132) / 2 * 1000;
+        this.bgmTimer = setInterval(() => this.playGameOverStep(), stepInterval);
+      }
+
+      playGameOverStep() {
+        if (!this.enabled || !this.ctx || this.isMuted) return;
+        const now = this.ctx.currentTime;
+        const s = this.gameOverStep % 32;
+        const targetDest = this.bgmMasterGain || this.ctx.destination;
+
+        // --- 1. FAT BOUNCY CARTOON TUBA / LOW BRASS ---
+        // Oompah bounce pattern with funny chromatic slides
+        const tubaPattern = [
+          65.41, 0, 98.00, 0,        // C2, G2
+          65.41, 0, 98.00, 0,        // C2, G2
+          87.31, 0, 130.81, 0,       // F2, C3
+          98.00, 0, 116.54, 123.47,  // G2, Bb2, B2 (cheeky walkup)
+          130.81, 0, 98.00, 0,       // C3, G2
+          130.81, 0, 98.00, 0,       // C3, G2
+          73.42, 0, 98.00, 0,        // D2, G2
+          98.00, 92.50, 87.31, 65.41 // G2, F#2, F2, C2 (comical stumble walkdown!)
+        ];
+
+        const tFreq = tubaPattern[s];
+        if (tFreq > 0) {
+          const osc = this.ctx.createOscillator();
+          const filter = this.ctx.createBiquadFilter();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sawtooth';
+          // Bouncy tuba pitch scoop: starts slightly higher and quickly drops into the pitch
+          osc.frequency.setValueAtTime(tFreq * 1.18, now);
+          osc.frequency.exponentialRampToValueAtTime(tFreq, now + 0.05);
+
+          // Resonant lowpass filter for fat cartoon brass "BOOMF"
+          filter.type = 'lowpass';
+          filter.Q.value = 4.2;
+          filter.frequency.setValueAtTime(520, now);
+          filter.frequency.exponentialRampToValueAtTime(140, now + 0.22);
+
+          // Short, punchy, bouncy tuba envelope
+          gain.gain.setValueAtTime(0.42, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(targetDest);
+
+          osc.start(now);
+          osc.stop(now + 0.26);
+
+          // Sub harmonic punch for weighty cartoon bottom
+          const sub = this.ctx.createOscillator();
+          const subGain = this.ctx.createGain();
+          sub.type = 'triangle';
+          sub.frequency.setValueAtTime(tFreq * 0.5, now);
+          subGain.gain.setValueAtTime(0.3, now);
+          subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          sub.connect(subGain);
+          subGain.connect(targetDest);
+          sub.start(now);
+          sub.stop(now + 0.22);
+        }
+
+        // --- 2. CHEEKY CARTOON KAZOO / HORNS STACCATO LEAD ---
+        const leadPattern = [
+          329.63, 0, 392.00, 440.00, // E4, G4, A4
+          0, 392.00, 0, 329.63,      // G4, E4
+          349.23, 0, 329.63, 0,      // F4, E4
+          293.66, 0, 261.63, 0,      // D4, C4
+          440.00, 0, 523.25, 440.00, // A4, C5, A4
+          0, 392.00, 0, 329.63,      // G4, E4
+          293.66, 0, 329.63, 293.66, // D4, E4, D4
+          261.63, 0, 0, 0            // C4 taunt finish!
+        ];
+
+        const mFreq = leadPattern[s];
+        if (mFreq > 0) {
+          const mOsc = this.ctx.createOscillator();
+          const mFilter = this.ctx.createBiquadFilter();
+          const mGain = this.ctx.createGain();
+
+          mOsc.type = 'square'; // Buzzing comical reed / horn tone
+          
+          // Grace note pitch scoop on syncopations
+          if (s === 3 || s === 19 || s === 27) {
+            mOsc.frequency.setValueAtTime(mFreq * 0.88, now);
+            mOsc.frequency.exponentialRampToValueAtTime(mFreq, now + 0.04);
+          } else if (s === 28) {
+            // Sarcastic slide down on the last note!
+            mOsc.frequency.setValueAtTime(mFreq, now);
+            mOsc.frequency.exponentialRampToValueAtTime(mFreq * 0.75, now + 0.35);
+          } else {
+            mOsc.frequency.setValueAtTime(mFreq, now);
+          }
+
+          // Bandpass / warm filter for cartoon sound
+          mFilter.type = 'bandpass';
+          mFilter.Q.value = 2.5;
+          mFilter.frequency.setValueAtTime(1100, now);
+
+          // Staccato envelope
+          const dur = (s === 28) ? 0.38 : 0.16;
+          mGain.gain.setValueAtTime(0.22, now);
+          mGain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+
+          mOsc.connect(mFilter);
+          mFilter.connect(mGain);
+          mGain.connect(targetDest);
+
+          mOsc.start(now);
+          mOsc.stop(now + dur + 0.02);
+        }
+
+        // --- 3. COMICAL WOODBLOCK / TEMPLE BLOCK PERCUSSION ---
+        if (s % 4 === 2) {
+          const wOsc = this.ctx.createOscillator();
+          const wGain = this.ctx.createGain();
+          wOsc.type = 'sine';
+          const wFreq = (s % 8 === 2) ? 880 : 1050; // High/Low woodblock pitch
+          wOsc.frequency.setValueAtTime(wFreq, now);
+          wOsc.frequency.exponentialRampToValueAtTime(wFreq * 0.6, now + 0.035);
+
+          wGain.gain.setValueAtTime(0.18, now);
+          wGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+          wOsc.connect(wGain);
+          wGain.connect(targetDest);
+          wOsc.start(now);
+          wOsc.stop(now + 0.045);
+        }
+
+        // --- 4. FUNNY CARTOON WHISTLE / SLIP ACCENT ON STEP 31 ---
+        if (s === 31) {
+          const pOsc = this.ctx.createOscillator();
+          const pGain = this.ctx.createGain();
+          pOsc.type = 'triangle';
+          pOsc.frequency.setValueAtTime(500, now);
+          pOsc.frequency.exponentialRampToValueAtTime(150, now + 0.18); // Comical slip whistle
+          pGain.gain.setValueAtTime(0.2, now);
+          pGain.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
+          pOsc.connect(pGain);
+          pGain.connect(targetDest);
+          pOsc.start(now);
+          pOsc.stop(now + 0.2);
+        }
+
+        this.gameOverStep++;
       }
 
       /* 1. SWEET KAWAII MUSIC BOX BGM (For Start Screen) */
       startSweetBGM() {
-        if (!this.enabled) return;
+        if (!this.enabled || this.isMuted) return;
         this.init();
         if (this.bgmMode === 'SWEET' && this.bgmTimer) return;
         this.stopBGM();
@@ -1480,12 +2377,10 @@
       }
 
       playSweetStep() {
-        if (!this.enabled || !this.ctx) return;
+        if (!this.enabled || !this.ctx || this.isMuted) return;
         const now = this.ctx.currentTime;
         const s = this.sweetStep % 32;
 
-        // Music Box Melody notes (C Major pentatonic / lullaby / anime opening)
-        // [E5, G5, C6, B5, A5, G5, E5, D5, C5, E5, G5, A5, G5, E5, D5, C5...]
         const melody = [
           659.25, 0, 783.99, 0, 1046.50, 0, 987.77, 0,
           880.00, 0, 783.99, 0, 659.25, 0, 587.33, 0,
@@ -1493,9 +2388,10 @@
           783.99, 0, 659.25, 0, 587.33, 0, 523.25, 0
         ];
 
+        const targetDest = this.bgmMasterGain || this.ctx.destination;
+
         const freq = melody[s];
         if (freq > 0) {
-          // Celesta / Music Box Sine with high harmonic
           const osc1 = this.ctx.createOscillator();
           const osc2 = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
@@ -1504,14 +2400,14 @@
           osc1.frequency.setValueAtTime(freq, now);
 
           osc2.type = 'triangle';
-          osc2.frequency.setValueAtTime(freq * 2, now); // Sweet sparkle chime
+          osc2.frequency.setValueAtTime(freq * 2, now);
 
           gain.gain.setValueAtTime(0.18, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
 
           osc1.connect(gain);
           osc2.connect(gain);
-          gain.connect(this.ctx.destination);
+          gain.connect(targetDest);
 
           osc1.start(now);
           osc2.start(now);
@@ -1529,7 +2425,7 @@
           bGain.gain.setValueAtTime(0.12, now);
           bGain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
           bOsc.connect(bGain);
-          bGain.connect(this.ctx.destination);
+          bGain.connect(targetDest);
           bOsc.start(now);
           bOsc.stop(now + 0.52);
         }
@@ -1539,7 +2435,7 @@
 
       /* 2. VINYL RECORD SCRATCH STOP (SUDDEN CRACK) */
       playRecordScratch() {
-        if (!this.enabled || !this.ctx) return;
+        if (!this.enabled || !this.ctx || this.isMuted) return;
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -1559,7 +2455,7 @@
 
       /* 3. HARDCORE AGGRESSIVE TRAP BGM (Gameplay) */
       startTrapBGM() {
-        if (!this.enabled) return;
+        if (!this.enabled || this.isMuted) return;
         this.init();
         this.stopBGM();
 
@@ -1568,6 +2464,8 @@
             this.customBgmAudio = new Audio(this.customBgmDataUrl);
             this.customBgmAudio.loop = true;
           }
+          const targetVol = (this.isMuted || !this.enabled) ? 0 : (this.isDucking ? this.bgmVolume * 0.2 : this.bgmVolume);
+          this.customBgmAudio.volume = targetVol;
           this.customBgmAudio.play().catch(e => console.log(e));
           this.bgmMode = 'CUSTOM';
           return;
@@ -1592,9 +2490,10 @@
       }
 
       playTrapStep() {
-        if (!this.enabled || !this.ctx) return;
+        if (!this.enabled || !this.ctx || this.isMuted) return;
         const now = this.ctx.currentTime;
         const s = this.step % 32;
+        const targetDest = this.bgmMasterGain || this.ctx.destination;
 
         // Punchy 808 Kick: 0, 8, 14, 18, 26
         if (s === 0 || s === 8 || s === 14 || s === 18 || s === 26) {
@@ -1606,7 +2505,7 @@
           gain.gain.setValueAtTime(0.7, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
           osc.connect(gain);
-          gain.connect(this.ctx.destination);
+          gain.connect(targetDest);
           osc.start(now);
           osc.stop(now + 0.23);
         }
@@ -1630,7 +2529,7 @@
 
           bOsc.connect(filter);
           filter.connect(bGain);
-          bGain.connect(this.ctx.destination);
+          bGain.connect(targetDest);
           bOsc.start(now);
           bOsc.stop(now + 0.52);
         }
@@ -1654,7 +2553,7 @@
 
           noise.connect(filter);
           filter.connect(noiseGain);
-          noiseGain.connect(this.ctx.destination);
+          noiseGain.connect(targetDest);
           noise.start(now);
         }
 
@@ -1674,7 +2573,7 @@
           hatGain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
           hat.connect(filter);
           filter.connect(hatGain);
-          hatGain.connect(this.ctx.destination);
+          hatGain.connect(targetDest);
           hat.start(now);
         }
 
@@ -1688,7 +2587,7 @@
           sGain.gain.setValueAtTime(0.07, now);
           sGain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
           sOsc.connect(sGain);
-          sGain.connect(this.ctx.destination);
+          sGain.connect(targetDest);
           sOsc.start(now);
           sOsc.stop(now + 0.15);
         }
@@ -1697,6 +2596,10 @@
       }
 
       playVoiceQuote(index) {
+        if (!this.enabled || this.isMuted || this.voiceVolume <= 0) return;
+        this.init();
+        this.startDucking();
+
         const quoteTexts = [
           "去你媽的！",
           "踢爆你的骨灰罈！",
@@ -1706,7 +2609,13 @@
 
         if (clipDataUrl) {
           const snd = new Audio(clipDataUrl);
-          snd.play().catch(e => console.warn(e));
+          snd.volume = this.voiceVolume;
+          snd.onended = () => this.endDucking();
+          snd.onerror = () => this.endDucking();
+          snd.play().catch(e => {
+            console.warn(e);
+            this.endDucking();
+          });
         } else {
           if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
@@ -1714,7 +2623,12 @@
             utter.lang = 'zh-TW';
             utter.rate = 1.45;
             utter.pitch = 1.3;
+            utter.volume = this.voiceVolume;
+            utter.onend = () => this.endDucking();
+            utter.onerror = () => this.endDucking();
             window.speechSynthesis.speak(utter);
+          } else {
+            this.endDucking();
           }
         }
       }
@@ -1725,7 +2639,7 @@
       }
 
       playPraiseChime() {
-        if (!this.enabled || !this.ctx) return;
+        if (!this.enabled || !this.ctx || this.isMuted) return;
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -1742,7 +2656,7 @@
       }
 
       playBanSound() {
-        if (!this.enabled || !this.ctx) return;
+        if (!this.enabled || !this.ctx || this.isMuted) return;
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -1770,7 +2684,7 @@
       }
 
       playTableSlam() {
-        if (!this.enabled || !this.ctx) return;
+        if (!this.enabled || !this.ctx || this.isMuted) return;
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -1786,7 +2700,7 @@
       }
 
       playDamageBuzz() {
-        if (!this.enabled || !this.ctx) return;
+        if (!this.enabled || !this.ctx || this.isMuted) return;
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -1802,7 +2716,7 @@
       }
 
       playHeartbeat() {
-        if (!this.enabled || !this.ctx) return;
+        if (!this.enabled || !this.ctx || this.isMuted) return;
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -1820,6 +2734,7 @@
       playGameOverCut() {
         if (!this.enabled || !this.ctx) return;
         this.stopBGM();
+        if (this.isMuted) return;
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -1892,11 +2807,22 @@
         this.lastHeartbeatTime = 0;
         this.memeImages = { 0: null, 1: null, 2: null, 3: null };
         this.coverPhoto = null;
+        this.coverSettings = { zoom: 100, mode: 'cover', posX: 50, posY: 50 };
+        this.memeSettings = {
+          0: { zoom: 100, mode: 'cover', posX: 50, posY: 50 },
+          1: { zoom: 100, mode: 'cover', posX: 50, posY: 50 },
+          2: { zoom: 100, mode: 'cover', posX: 50, posY: 50 },
+          3: { zoom: 100, mode: 'cover', posX: 50, posY: 50 }
+        };
         this.leaderboard = [];
 
         this.loadStorage();
         this.initDOM();
         this.initEvents();
+      }
+
+      defaultImgSettings() {
+        return { zoom: 100, mode: 'cover', posX: 50, posY: 50 };
       }
 
       loadStorage() {
@@ -1906,6 +2832,19 @@
 
           const cover = localStorage.getItem('hageng_cover_photo');
           if (cover) this.coverPhoto = cover;
+
+          const coverS = localStorage.getItem('hageng_cover_settings');
+          if (coverS) {
+            this.coverSettings = Object.assign(this.defaultImgSettings(), JSON.parse(coverS));
+          }
+
+          const memeS = localStorage.getItem('hageng_meme_settings');
+          if (memeS) {
+            const parsed = JSON.parse(memeS);
+            for (let i = 0; i <= 3; i++) {
+              if (parsed[i]) this.memeSettings[i] = Object.assign(this.defaultImgSettings(), parsed[i]);
+            }
+          }
 
           const board = localStorage.getItem('hageng_leaderboard');
           if (board) {
@@ -1932,10 +2871,128 @@
           } else {
             localStorage.removeItem('hageng_cover_photo');
           }
+          localStorage.setItem('hageng_cover_settings', JSON.stringify(this.coverSettings));
+          localStorage.setItem('hageng_meme_settings', JSON.stringify(this.memeSettings));
           localStorage.setItem('hageng_leaderboard', JSON.stringify(this.leaderboard));
         } catch (e) {
           console.warn(e);
         }
+      }
+
+      /* Image Transform Utility (Plan A: Zoom + Position + Cover/Contain) */
+      applyImgTransform(imgElement, settings) {
+        if (!imgElement || !settings) return;
+        const zoom = (settings.zoom ?? 100) / 100;
+        const mode = settings.mode || 'cover';
+        const posX = settings.posX ?? 50;
+        const posY = settings.posY ?? 50;
+
+        imgElement.style.objectFit = mode;
+        imgElement.style.objectPosition = `${posX}% ${posY}%`;
+        imgElement.style.transform = `scale(${zoom})`;
+        imgElement.style.transformOrigin = `${posX}% ${posY}%`;
+      }
+
+      setCoverMode(mode) {
+        this.coverSettings.mode = mode;
+        this.saveStorage();
+        this.updateSettingsUI();
+      }
+
+      setCoverZoom(zoom) {
+        this.coverSettings.zoom = parseInt(zoom);
+        this.saveStorage();
+        this.updateSettingsUI();
+      }
+
+      setCoverPos(posX, posY) {
+        if (posX !== null && posX !== undefined) this.coverSettings.posX = parseInt(posX);
+        if (posY !== null && posY !== undefined) this.coverSettings.posY = parseInt(posY);
+        this.saveStorage();
+        this.updateSettingsUI();
+      }
+
+      resetCoverSettings() {
+        this.coverSettings = this.defaultImgSettings();
+        this.saveStorage();
+        this.updateSettingsUI();
+      }
+
+      setMemeMode(stage, mode) {
+        if (!this.memeSettings[stage]) this.memeSettings[stage] = this.defaultImgSettings();
+        this.memeSettings[stage].mode = mode;
+        this.saveStorage();
+        this.updateSettingsUI();
+        this.updateAvatarVisuals();
+      }
+
+      setMemeZoom(stage, zoom) {
+        if (!this.memeSettings[stage]) this.memeSettings[stage] = this.defaultImgSettings();
+        this.memeSettings[stage].zoom = parseInt(zoom);
+        this.saveStorage();
+        this.updateSettingsUI();
+        this.updateAvatarVisuals();
+      }
+
+      setMemePos(stage, posX, posY) {
+        if (!this.memeSettings[stage]) this.memeSettings[stage] = this.defaultImgSettings();
+        if (posX !== null && posX !== undefined) this.memeSettings[stage].posX = parseInt(posX);
+        if (posY !== null && posY !== undefined) this.memeSettings[stage].posY = parseInt(posY);
+        this.saveStorage();
+        this.updateSettingsUI();
+        this.updateAvatarVisuals();
+      }
+
+      resetMemeSettings(stage) {
+        this.memeSettings[stage] = this.defaultImgSettings();
+        this.saveStorage();
+        this.updateSettingsUI();
+        this.updateAvatarVisuals();
+      }
+
+      setupDraggable(frameEl, getSettings, onUpdate) {
+        if (!frameEl) return;
+        let isDown = false;
+        let startX = 0, startY = 0;
+        let initX = 50, initY = 50;
+
+        frameEl.addEventListener('pointerdown', (e) => {
+          if (e.button !== 0) return;
+          const s = getSettings();
+          isDown = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          initX = s.posX ?? 50;
+          initY = s.posY ?? 50;
+          try { frameEl.setPointerCapture(e.pointerId); } catch(_) {}
+          frameEl.style.cursor = 'grabbing';
+          e.preventDefault();
+        });
+
+        frameEl.addEventListener('pointermove', (e) => {
+          if (!isDown) return;
+          const rect = frameEl.getBoundingClientRect();
+          if (rect.width <= 0 || rect.height <= 0) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          const s = getSettings();
+          const newX = Math.round(Math.max(0, Math.min(100, initX - (dx / rect.width) * 100)));
+          const newY = Math.round(Math.max(0, Math.min(100, initY - (dy / rect.height) * 100)));
+          s.posX = newX;
+          s.posY = newY;
+          onUpdate();
+        });
+
+        const endDrag = (e) => {
+          if (isDown) {
+            isDown = false;
+            frameEl.style.cursor = 'grab';
+            try { frameEl.releasePointerCapture(e.pointerId); } catch(_) {}
+            this.saveStorage();
+          }
+        };
+        frameEl.addEventListener('pointerup', endDrag);
+        frameEl.addEventListener('pointercancel', endDrag);
       }
 
       initDOM() {
@@ -1989,37 +3046,155 @@
       initEvents() {
         // First click on document / start screen triggers sweet BGM
         const tryStartSweet = () => {
-          if (!this.isRunning && sound.enabled && sound.bgmMode !== 'SWEET') {
+          if (!this.isRunning && sound.enabled && !sound.isMuted && sound.bgmMode !== 'SWEET') {
             sound.startSweetBGM();
-            document.getElementById('sweet-bgm-icon').textContent = '🎵 治癒音樂：播放中';
+            const sweetIcon = document.getElementById('sweet-bgm-icon');
+            if (sweetIcon) sweetIcon.textContent = '🎵 治癒音樂：播放中';
           }
         };
         document.body.addEventListener('pointerdown', tryStartSweet, { once: true });
 
         // Toggle Sweet BGM in Start Screen
-        document.getElementById('btn-sweet-bgm-toggle').addEventListener('click', (e) => {
-          e.stopPropagation();
-          sound.init();
-          if (sound.bgmMode === 'SWEET') {
-            sound.stopBGM();
-            document.getElementById('sweet-bgm-icon').textContent = '🔇 治癒音樂：已靜音';
-          } else {
-            sound.startSweetBGM();
-            document.getElementById('sweet-bgm-icon').textContent = '🎵 治癒音樂：播放中';
-          }
-        });
+        const btnSweetToggle = document.getElementById('btn-sweet-bgm-toggle');
+        if (btnSweetToggle) {
+          btnSweetToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sound.init();
+            if (sound.bgmMode === 'SWEET') {
+              sound.stopBGM();
+              document.getElementById('sweet-bgm-icon').textContent = '🔇 治癒音樂：已靜音';
+            } else {
+              sound.startSweetBGM();
+              document.getElementById('sweet-bgm-icon').textContent = '🎵 治癒音樂：播放中';
+            }
+          });
+        }
 
         // Header Sound Toggle (In gameplay)
-        document.getElementById('btn-sound-toggle').addEventListener('click', () => {
-          sound.init();
-          sound.enabled = !sound.enabled;
-          document.getElementById('sound-icon').textContent = sound.enabled ? '🔊 狂暴 Trap' : '🔇 靜音';
-          if (!sound.enabled) {
-            sound.stopBGM();
-          } else if (this.isRunning) {
-            sound.startTrapBGM();
+        const btnSoundToggle = document.getElementById('btn-sound-toggle');
+        if (btnSoundToggle) {
+          btnSoundToggle.addEventListener('click', () => {
+            sound.init();
+            sound.toggleMute();
+            this.updateSettingsUI();
+            if (this.isRunning && !sound.isMuted) {
+              sound.startTrapBGM();
+            }
+          });
+        }
+
+        // Header Quick Volume Popover
+        const btnQuickVol = document.getElementById('btn-quick-volume');
+        const quickPopover = document.getElementById('quick-volume-popover');
+        const quickWrapper = document.getElementById('quick-volume-wrapper');
+
+        if (btnQuickVol && quickPopover) {
+          btnQuickVol.addEventListener('click', (e) => {
+            e.stopPropagation();
+            quickPopover.classList.toggle('open');
+          });
+
+          document.addEventListener('click', (e) => {
+            if (quickWrapper && !quickWrapper.contains(e.target)) {
+              quickPopover.classList.remove('open');
+            }
+          });
+        }
+
+        // Header Mute Button inside Popover
+        const btnHeaderMute = document.getElementById('btn-header-mute');
+        if (btnHeaderMute) {
+          btnHeaderMute.addEventListener('click', () => {
+            sound.init();
+            sound.toggleMute();
+            this.updateSettingsUI();
+          });
+        }
+
+        // Settings Buttons in Header
+        const btnHeaderOpenSettings = document.getElementById('btn-header-open-settings');
+        if (btnHeaderOpenSettings) {
+          btnHeaderOpenSettings.addEventListener('click', () => {
+            if (quickPopover) quickPopover.classList.remove('open');
+            document.getElementById('settings-modal').style.display = 'flex';
+          });
+        }
+
+        const btnHeaderSettings = document.getElementById('btn-header-settings');
+        if (btnHeaderSettings) {
+          btnHeaderSettings.addEventListener('click', () => {
+            document.getElementById('settings-modal').style.display = 'flex';
+          });
+        }
+
+        // Audio Ducking Callback to update glowing badges
+        sound.onDuckingChange = (isDucking) => {
+          const badge = document.getElementById('ducking-badge');
+          const txt = document.getElementById('ducking-status-text');
+          const headerDuck = document.getElementById('header-duck-indicator');
+          const headerTxt = document.getElementById('header-duck-text');
+
+          if (badge) {
+            badge.classList.toggle('active-ducking', isDucking);
+            if (txt) txt.textContent = isDucking ? '⚡ 廣播級閃避中：BGM 音量已壓低至 20%' : '✨ 廣播級語音閃避 (Audio Ducking)：已待命';
           }
-        });
+          if (headerDuck) {
+            headerDuck.classList.toggle('active-ducking', isDucking);
+            if (headerTxt) headerTxt.textContent = isDucking ? '閃避中(20%)' : '閃避待命';
+          }
+        };
+
+        // Synchronized Volume Sliders
+        const sliderSettingsBgm = document.getElementById('settings-bgm-volume');
+        const sliderQuickBgm = document.getElementById('quick-bgm-slider');
+        const sliderSettingsVoice = document.getElementById('settings-voice-volume');
+        const sliderQuickVoice = document.getElementById('quick-voice-slider');
+
+        if (sliderSettingsBgm) {
+          sliderSettingsBgm.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            sound.setBgmVolume(val / 100);
+            document.getElementById('settings-bgm-val').textContent = `${val}%`;
+            if (sliderQuickBgm) sliderQuickBgm.value = val;
+            const qVal = document.getElementById('quick-bgm-val');
+            if (qVal) qVal.textContent = `${val}%`;
+          });
+        }
+
+        if (sliderQuickBgm) {
+          sliderQuickBgm.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            sound.setBgmVolume(val / 100);
+            const qVal = document.getElementById('quick-bgm-val');
+            if (qVal) qVal.textContent = `${val}%`;
+            if (sliderSettingsBgm) sliderSettingsBgm.value = val;
+            const sVal = document.getElementById('settings-bgm-val');
+            if (sVal) sVal.textContent = `${val}%`;
+          });
+        }
+
+        if (sliderSettingsVoice) {
+          sliderSettingsVoice.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            sound.setVoiceVolume(val / 100);
+            document.getElementById('settings-voice-val').textContent = `${val}%`;
+            if (sliderQuickVoice) sliderQuickVoice.value = val;
+            const qVal = document.getElementById('quick-voice-val');
+            if (qVal) qVal.textContent = `${val}%`;
+          });
+        }
+
+        if (sliderQuickVoice) {
+          sliderQuickVoice.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            sound.setVoiceVolume(val / 100);
+            const qVal = document.getElementById('quick-voice-val');
+            if (qVal) qVal.textContent = `${val}%`;
+            if (sliderSettingsVoice) sliderSettingsVoice.value = val;
+            const sVal = document.getElementById('settings-voice-val');
+            if (sVal) sVal.textContent = `${val}%`;
+          });
+        }
 
         // Start Button: Dramatic Transition (Scratch stop -> Shatter bass drop -> Trap BGM)
         document.getElementById('btn-start-game').addEventListener('click', () => {
@@ -2042,20 +3217,32 @@
         const settingsModal = document.getElementById('settings-modal');
         document.getElementById('btn-open-settings-menu').addEventListener('click', () => {
           settingsModal.style.display = 'flex';
+          this.updateSettingsUI();
         });
         document.getElementById('btn-close-settings').addEventListener('click', () => {
           settingsModal.style.display = 'none';
           this.updateAvatarVisuals();
         });
 
-        // Leaderboard from Start Menu
+        // Leaderboard from Start Menu (Keeps sweet BGM playing)
         document.getElementById('btn-view-leaderboard-menu').addEventListener('click', () => {
           document.getElementById('record-input-section').style.display = 'none';
+          const btnCloseGO = document.getElementById('btn-close-gameover');
+          if (btnCloseGO) btnCloseGO.style.display = 'inline-block';
           document.getElementById('gameover-modal').style.display = 'flex';
         });
 
-        // Restart Game Button
+        // Close Gameover / Leaderboard Modal to return to start menu
+        const btnCloseGO = document.getElementById('btn-close-gameover');
+        if (btnCloseGO) {
+          btnCloseGO.addEventListener('click', () => {
+            document.getElementById('gameover-modal').style.display = 'none';
+          });
+        }
+
+        // Restart Game Button (Stops Gameover BGM and starts Trap BGM)
         document.getElementById('btn-restart-game').addEventListener('click', () => {
+          sound.stopBGM();
           document.getElementById('gameover-modal').style.display = 'none';
           this.start();
         });
@@ -2116,20 +3303,84 @@
           this.renderLeaderboard();
         });
 
-        // Reset Settings
+        // Reset Settings (All)
         document.getElementById('btn-reset-all').addEventListener('click', () => {
           this.memeImages = { 0: null, 1: null, 2: null, 3: null };
           this.coverPhoto = null;
+          this.coverSettings = this.defaultImgSettings();
+          this.memeSettings = {
+            0: this.defaultImgSettings(),
+            1: this.defaultImgSettings(),
+            2: this.defaultImgSettings(),
+            3: this.defaultImgSettings()
+          };
           sound.voiceClips = [null, null, null];
           sound.customBgmDataUrl = null;
           if (sound.customBgmAudio) sound.customBgmAudio = null;
-          this.saveStorage();
+          sound.bgmVolume = 0.45;
+          sound.voiceVolume = 1.0;
+          sound.isMuted = false;
           sound.saveAudioConfig();
+          sound.applyBgmGain();
+
+          this.saveStorage();
           this.coverImg.style.display = 'none';
           this.coverSvg.style.display = 'block';
           this.updateSettingsUI();
           this.updateAvatarVisuals();
         });
+
+        // Cover Photo Draggable & Sliders (Plan A)
+        this.setupDraggable(
+          document.getElementById('preview-cover-frame'),
+          () => this.coverSettings,
+          () => {
+            const previewCoverImg = document.getElementById('preview-cover-img');
+            this.applyImgTransform(previewCoverImg, this.coverSettings);
+            this.applyImgTransform(this.coverImg, this.coverSettings);
+            const slX = document.getElementById('slider-cover-posx');
+            const lblX = document.getElementById('lbl-cover-posx');
+            const slY = document.getElementById('slider-cover-posy');
+            const lblY = document.getElementById('lbl-cover-posy');
+            if (slX) slX.value = this.coverSettings.posX;
+            if (lblX) lblX.textContent = `${this.coverSettings.posX}%`;
+            if (slY) slY.value = this.coverSettings.posY;
+            if (lblY) lblY.textContent = `${this.coverSettings.posY}%`;
+          }
+        );
+
+        const sliderCoverZoom = document.getElementById('slider-cover-zoom');
+        if (sliderCoverZoom) {
+          sliderCoverZoom.addEventListener('input', (e) => {
+            this.coverSettings.zoom = parseInt(e.target.value);
+            document.getElementById('lbl-cover-zoom').textContent = `${this.coverSettings.zoom}%`;
+            this.applyImgTransform(document.getElementById('preview-cover-img'), this.coverSettings);
+            this.applyImgTransform(this.coverImg, this.coverSettings);
+            this.saveStorage();
+          });
+        }
+
+        const sliderCoverPosX = document.getElementById('slider-cover-posx');
+        if (sliderCoverPosX) {
+          sliderCoverPosX.addEventListener('input', (e) => {
+            this.coverSettings.posX = parseInt(e.target.value);
+            document.getElementById('lbl-cover-posx').textContent = `${this.coverSettings.posX}%`;
+            this.applyImgTransform(document.getElementById('preview-cover-img'), this.coverSettings);
+            this.applyImgTransform(this.coverImg, this.coverSettings);
+            this.saveStorage();
+          });
+        }
+
+        const sliderCoverPosY = document.getElementById('slider-cover-posy');
+        if (sliderCoverPosY) {
+          sliderCoverPosY.addEventListener('input', (e) => {
+            this.coverSettings.posY = parseInt(e.target.value);
+            document.getElementById('lbl-cover-posy').textContent = `${this.coverSettings.posY}%`;
+            this.applyImgTransform(document.getElementById('preview-cover-img'), this.coverSettings);
+            this.applyImgTransform(this.coverImg, this.coverSettings);
+            this.saveStorage();
+          });
+        }
 
         // Cover Photo Upload
         document.getElementById('input-cover-photo').addEventListener('change', (e) => {
@@ -2138,13 +3389,69 @@
           const reader = new FileReader();
           reader.onload = (ev) => {
             this.coverPhoto = ev.target.result;
-            this.coverImg.src = this.coverPhoto;
-            this.coverImg.style.display = 'block';
-            this.coverSvg.style.display = 'none';
             this.saveStorage();
+            this.updateSettingsUI();
           };
           reader.readAsDataURL(file);
         });
+
+        // Meme Slots Draggables & Sliders (Plan A for 0..3)
+        for (let i = 0; i <= 3; i++) {
+          const frame = document.getElementById(`preview-stage-${i}`);
+          this.setupDraggable(
+            frame,
+            () => this.memeSettings[i] || (this.memeSettings[i] = this.defaultImgSettings()),
+            () => {
+              const s = this.memeSettings[i];
+              this.applyImgTransform(document.getElementById(`preview-stage-img-${i}`), s);
+              this.updateAvatarVisuals();
+              const slX = document.getElementById(`slider-meme-posx-${i}`);
+              const lblX = document.getElementById(`lbl-meme-posx-${i}`);
+              const slY = document.getElementById(`slider-meme-posy-${i}`);
+              const lblY = document.getElementById(`lbl-meme-posy-${i}`);
+              if (slX) slX.value = s.posX;
+              if (lblX) lblX.textContent = `${s.posX}%`;
+              if (slY) slY.value = s.posY;
+              if (lblY) lblY.textContent = `${s.posY}%`;
+            }
+          );
+
+          const slZoom = document.getElementById(`slider-meme-zoom-${i}`);
+          if (slZoom) {
+            slZoom.addEventListener('input', (e) => {
+              if (!this.memeSettings[i]) this.memeSettings[i] = this.defaultImgSettings();
+              this.memeSettings[i].zoom = parseInt(e.target.value);
+              document.getElementById(`lbl-meme-zoom-${i}`).textContent = `${this.memeSettings[i].zoom}%`;
+              this.applyImgTransform(document.getElementById(`preview-stage-img-${i}`), this.memeSettings[i]);
+              this.updateAvatarVisuals();
+              this.saveStorage();
+            });
+          }
+
+          const slX = document.getElementById(`slider-meme-posx-${i}`);
+          if (slX) {
+            slX.addEventListener('input', (e) => {
+              if (!this.memeSettings[i]) this.memeSettings[i] = this.defaultImgSettings();
+              this.memeSettings[i].posX = parseInt(e.target.value);
+              document.getElementById(`lbl-meme-posx-${i}`).textContent = `${this.memeSettings[i].posX}%`;
+              this.applyImgTransform(document.getElementById(`preview-stage-img-${i}`), this.memeSettings[i]);
+              this.updateAvatarVisuals();
+              this.saveStorage();
+            });
+          }
+
+          const slY = document.getElementById(`slider-meme-posy-${i}`);
+          if (slY) {
+            slY.addEventListener('input', (e) => {
+              if (!this.memeSettings[i]) this.memeSettings[i] = this.defaultImgSettings();
+              this.memeSettings[i].posY = parseInt(e.target.value);
+              document.getElementById(`lbl-meme-posy-${i}`).textContent = `${this.memeSettings[i].posY}%`;
+              this.applyImgTransform(document.getElementById(`preview-stage-img-${i}`), this.memeSettings[i]);
+              this.updateAvatarVisuals();
+              this.saveStorage();
+            });
+          }
+        }
 
         // Custom BGM Upload
         document.getElementById('input-custom-bgm').addEventListener('change', (e) => {
@@ -2225,14 +3532,129 @@
       }
 
       updateSettingsUI() {
+        // 1. Cover Photo Preview & Controls
+        const previewCoverImg = document.getElementById('preview-cover-img');
+        const previewCoverPlaceholder = document.getElementById('preview-cover-placeholder');
+        if (this.coverPhoto) {
+          if (previewCoverImg) {
+            previewCoverImg.src = this.coverPhoto;
+            previewCoverImg.style.display = 'block';
+            this.applyImgTransform(previewCoverImg, this.coverSettings);
+          }
+          if (previewCoverPlaceholder) previewCoverPlaceholder.style.display = 'none';
+        } else {
+          if (previewCoverImg) previewCoverImg.style.display = 'none';
+          if (previewCoverPlaceholder) previewCoverPlaceholder.style.display = 'flex';
+        }
+
+        const sliderCoverZoom = document.getElementById('slider-cover-zoom');
+        if (sliderCoverZoom) sliderCoverZoom.value = this.coverSettings.zoom;
+        const lblCoverZoom = document.getElementById('lbl-cover-zoom');
+        if (lblCoverZoom) lblCoverZoom.textContent = `${this.coverSettings.zoom}%`;
+
+        const sliderCoverPosX = document.getElementById('slider-cover-posx');
+        if (sliderCoverPosX) sliderCoverPosX.value = this.coverSettings.posX;
+        const lblCoverPosX = document.getElementById('lbl-cover-posx');
+        if (lblCoverPosX) lblCoverPosX.textContent = `${this.coverSettings.posX}%`;
+
+        const sliderCoverPosY = document.getElementById('slider-cover-posy');
+        if (sliderCoverPosY) sliderCoverPosY.value = this.coverSettings.posY;
+        const lblCoverPosY = document.getElementById('lbl-cover-posy');
+        if (lblCoverPosY) lblCoverPosY.textContent = `${this.coverSettings.posY}%`;
+
+        const btnCoverCover = document.getElementById('btn-cover-mode-cover');
+        const btnCoverContain = document.getElementById('btn-cover-mode-contain');
+        if (btnCoverCover && btnCoverContain) {
+          btnCoverCover.classList.toggle('active', this.coverSettings.mode === 'cover');
+          btnCoverContain.classList.toggle('active', this.coverSettings.mode === 'contain');
+        }
+
+        // Apply to start screen avatar
+        if (this.coverPhoto) {
+          this.coverImg.src = this.coverPhoto;
+          this.coverImg.style.display = 'block';
+          this.coverSvg.style.display = 'none';
+          this.applyImgTransform(this.coverImg, this.coverSettings);
+        } else {
+          this.coverImg.style.display = 'none';
+          this.coverSvg.style.display = 'block';
+        }
+
+        // 2. Meme Slots Previews & Controls
         for (let i = 0; i <= 3; i++) {
-          const prev = document.getElementById(`preview-stage-${i}`);
+          const s = this.memeSettings[i] || { zoom: 100, mode: 'cover', posX: 50, posY: 50 };
+          const img = document.getElementById(`preview-stage-img-${i}`);
+          const placeholder = document.getElementById(`placeholder-stage-${i}`);
           if (this.memeImages[i]) {
-            prev.innerHTML = `<img src="${this.memeImages[i]}" alt="Stage ${i}"/>`;
+            if (img) {
+              img.src = this.memeImages[i];
+              img.style.display = 'block';
+              this.applyImgTransform(img, s);
+            }
+            if (placeholder) placeholder.style.display = 'none';
           } else {
-            prev.innerHTML = `<span style="font-size:12px; color:#888;">預設動漫風</span>`;
+            if (img) img.style.display = 'none';
+            if (placeholder) placeholder.style.display = 'block';
+          }
+
+          const slZoom = document.getElementById(`slider-meme-zoom-${i}`);
+          if (slZoom) slZoom.value = s.zoom;
+          const lblZoom = document.getElementById(`lbl-meme-zoom-${i}`);
+          if (lblZoom) lblZoom.textContent = `${s.zoom}%`;
+
+          const slX = document.getElementById(`slider-meme-posx-${i}`);
+          if (slX) slX.value = s.posX;
+          const lblX = document.getElementById(`lbl-meme-posx-${i}`);
+          if (lblX) lblX.textContent = `${s.posX}%`;
+
+          const slY = document.getElementById(`slider-meme-posy-${i}`);
+          if (slY) slY.value = s.posY;
+          const lblY = document.getElementById(`lbl-meme-posy-${i}`);
+          if (lblY) lblY.textContent = `${s.posY}%`;
+
+          const btnCover = document.getElementById(`btn-meme-mode-cover-${i}`);
+          const btnContain = document.getElementById(`btn-meme-mode-contain-${i}`);
+          if (btnCover && btnContain) {
+            btnCover.classList.toggle('active', s.mode === 'cover');
+            btnContain.classList.toggle('active', s.mode === 'contain');
           }
         }
+
+        // 3. Audio & Voice Sliders Sync (Settings Modal & Header Quick Bar)
+        const bgmPercent = Math.round(sound.bgmVolume * 100);
+        const voicePercent = Math.round(sound.voiceVolume * 100);
+
+        const setBgm = document.getElementById('settings-bgm-volume');
+        if (setBgm) setBgm.value = bgmPercent;
+        const setBgmVal = document.getElementById('settings-bgm-val');
+        if (setBgmVal) setBgmVal.textContent = `${bgmPercent}%`;
+
+        const setVoice = document.getElementById('settings-voice-volume');
+        if (setVoice) setVoice.value = voicePercent;
+        const setVoiceVal = document.getElementById('settings-voice-val');
+        if (setVoiceVal) setVoiceVal.textContent = `${voicePercent}%`;
+
+        const quickBgm = document.getElementById('quick-bgm-slider');
+        if (quickBgm) quickBgm.value = bgmPercent;
+        const quickBgmVal = document.getElementById('quick-bgm-val');
+        if (quickBgmVal) quickBgmVal.textContent = `${bgmPercent}%`;
+
+        const quickVoice = document.getElementById('quick-voice-slider');
+        if (quickVoice) quickVoice.value = voicePercent;
+        const quickVoiceVal = document.getElementById('quick-voice-val');
+        if (quickVoiceVal) quickVoiceVal.textContent = `${voicePercent}%`;
+
+        // 4. Mute States
+        const headerMuteIcon = document.getElementById('header-mute-icon');
+        if (headerMuteIcon) headerMuteIcon.textContent = sound.isMuted ? '🔊 解除靜音' : '🔇 一鍵靜音';
+
+        const soundIcon = document.getElementById('sound-icon');
+        if (soundIcon) soundIcon.textContent = sound.isMuted ? '🔇 靜音中' : '🔊 狂暴 Trap';
+
+        const btnSoundToggle = document.getElementById('btn-sound-toggle');
+        if (btnSoundToggle) btnSoundToggle.classList.toggle('muted', sound.isMuted);
+
+        // 5. Voice clips and BGM status labels
         for (let v = 0; v < 3; v++) {
           const status = document.getElementById(`voice-status-${v}`);
           if (sound.voiceClips[v]) {
@@ -2308,8 +3730,11 @@
         this.renderLeaderboard();
 
         setTimeout(() => {
+          const btnCloseGO = document.getElementById('btn-close-gameover');
+          if (btnCloseGO) btnCloseGO.style.display = 'none';
           document.getElementById('gameover-modal').style.display = 'flex';
-        }, 600);
+          sound.startGameOverBGM();
+        }, 650);
       }
 
       gameLoop(currentTime) {
@@ -2684,6 +4109,7 @@
           this.imgStages.forEach((img, idx) => {
             if (idx === stage) {
               img.src = customMemeSrc;
+              this.applyImgTransform(img, this.memeSettings[idx]);
               img.style.display = 'block';
             } else {
               img.style.display = 'none';
